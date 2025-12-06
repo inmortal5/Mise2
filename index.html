@@ -1326,13 +1326,7 @@
             showSliderImage(0);
         }
 
-        function showSliderImage(index) {
-            if (sliderImageElements.length === 0) return;
-
-            // Lógica circular corregida
-            let newIndex = index % sliderImageElements.length;
-            if (newIndex < 0) newIndex = sliderImageElements.length - 1;
-
+        
             sliderImageElements.forEach((img, i) => {
                 img.classList.toggle('active', i === newIndex);
             });
@@ -1358,7 +1352,7 @@
             }
 
             // Añadir a productos recientes (simulado)
-            if (!recentProducts.some(p => p.id === productId)) {
+        o    if (!recentProducts.some(p => p.id === productId)) {
                  recentProducts.unshift(product);
                  if (recentProducts.length > 5) recentProducts.pop();
                  saveRecentProducts();

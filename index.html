@@ -1710,16 +1710,21 @@
             if (registrationForm) {
                  registrationForm.addEventListener('submit', saveUserData);
             }
-                        // Listeners del Slider (Lógica circular)
-            sliderPrevBtn.addEventListener('click', () => {
-                const newIndex = currentImageIndex - 1;
-                showSliderImage(newIndex);
-            });
+                                    // Listeners del Slider (Lógica circular, ahora con chequeo de seguridad)
+            if (sliderPrevBtn) { // <--- ¡Asegura que el botón existe antes de añadir el listener!
+                sliderPrevBtn.addEventListener('click', () => {
+                    const newIndex = currentImageIndex - 1;
+                    showSliderImage(newIndex);
+                });
+            }
 
-            sliderNextBtn.addEventListener('click', () => {
-                const newIndex = currentImageIndex + 1;
-                showSliderImage(newIndex);
-            });
+            if (sliderNextBtn) { // <--- ¡Asegura que el botón existe antes de añadir el listener!
+                sliderNextBtn.addEventListener('click', () => {
+                    const newIndex = currentImageIndex + 1;
+                    showSliderImage(newIndex);
+                });
+            }
+
 
 
 

@@ -1711,16 +1711,20 @@
                  registrationForm.addEventListener('submit', saveUserData);
             }
             
-            // Listeners del Slider (Lógica circular)
-            sliderPrevBtn.addEventListener('click', () => {
-                const newIndex = currentImageIndex - 1;
-                showSliderImage(newIndex);
-            });
+            // --- LÍNEAS CORREGIDAS PARA GARANTIZAR EL FUNCIONAMIENTO ---
 
-            sliderNextBtn.addEventListener('click', () => {
-                const newIndex = currentImageIndex + 1;
-                showSliderImage(newIndex);
-            });
+// Listener para el botón de imagen anterior
+document.getElementById('slider-prev-btn').addEventListener('click', () => {
+    const newIndex = currentImageIndex - 1;
+    showSliderImage(newIndex);
+});
+
+// Listener para el botón de imagen siguiente
+document.getElementById('slider-next-btn').addEventListener('click', () => {
+    const newIndex = currentImageIndex + 1;
+    showSliderImage(newIndex);
+});
+
 
             // Listener para el botón de retroceso de detalle
             document.getElementById('back-to-main').addEventListener('click', () => {

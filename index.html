@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mise Tienda Online- </title>
+    <title>Mise tienda onlinevr0.299</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         /* --- ESTILOS CSS BASE (LIGHT MODE / CLON IMAGEN) --- */
@@ -24,11 +24,11 @@
         
         /* 1. CAMBIO DE FONDO: IMAGEN DE FONDO GENERAL PARA EL BODY */
         body { 
-            background-color: transparent; /* Necesario para que la imagen se vea */
-            background-image: url('https://i.ibb.co/3q0Wqys/33-sin-t-tulo-20251201081549.png'); /* URL de la imagen de fondo */
+            background-color: transparent; 
+            background-image: url('https://i.ibb.co/3q0Wqys/33-sin-t-tulo-20251201081549.png');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* Fija la imagen al scroll */
+            background-attachment: fixed;
             display: flex; 
             justify-content: center; 
             min-height: 100vh; 
@@ -38,19 +38,52 @@
         .app-container {
             width: 100%; 
             max-width: 420px; 
-            /* 1. CAMBIO DE FONDO: LIGERA TRANSPARENCIA EN EL CONTENEDOR PRINCIPAL */
             background-color: rgba(255, 255, 255, 0.95); 
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.1); 
             display: flex; 
             flex-direction: column; 
             position: relative;
         }
+        
+        /* --- CORRECCIÓN: ESTILOS DEL MENÚ LATERAL (SIDE MENU) --- */
+        #side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 70%;
+            max-width: 250px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.4);
+            z-index: 100; /* Asegura que esté sobre todo, incluyendo el overlay */
+            transition: transform 0.3s ease-out;
+            transform: translateX(-100%); /* Oculto inicialmente fuera de pantalla */
+            padding: 20px 10px;
+            overflow-y: auto;
+        }
+
+        #side-menu.open {
+            transform: translateX(0); /* Se desliza para mostrarse */
+        }
+        
+        /* Estilos para los items del menú lateral */
+        .menu-item {
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            font-size: 16px;
+            color: var(--color-negro);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.1s;
+        }
+        .menu-item:hover {
+            background-color: #f0f0f0;
+        }
 
         /* Contenedor de Vistas */
-        #main-app-content, #product-detail-view, #registration-view, #profile-view, #cart-view, #privacy-policy-view {
+        #main-app-content, #product-detail-view, #registration-view, #profile-view, #cart-view, #privacy-policy-view, #saved-view {
             width: 100%; 
             flex-grow: 1; 
-            /* Fondo transparente para que se vea el fondo del app-container (semitransparente) */
             background-color: transparent; 
             position: absolute; 
             top: 0; 
@@ -88,7 +121,7 @@
             justify-content: space-between; 
             align-items: center; 
             padding: 8px 10px; 
-            background-color: var(--color-header-bg); /* Fondo oscuro */
+            background-color: var(--color-header-bg); 
             color: white; 
             border-bottom: none; 
         }
@@ -110,7 +143,7 @@
             border-radius: 20px; 
             font-size: 14px; 
             background-color: #ffffff; 
-            color: var(--color-negro) !important; /* FIX: Asegurar que el texto del input es visible */
+            color: var(--color-negro) !important;
         }
         .search-bar i.fa-search {
             position: absolute;
@@ -149,15 +182,31 @@
             margin-bottom: 5px;
             background-color: #f0f0f0; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.2s, box-shadow 0.2s;
         }
         .category-icon-circle i {
             font-size: 20px;
             color: var(--color-negro);
+            transition: color 0.2s;
         }
         .category-wrapper span { 
             font-size: 12px; 
             color: var(--color-negro); 
             font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        /* FIX: ESTILO DE CATEGORÍA ACTIVA (Corrección de menú superior) */
+        .category-wrapper.active .category-icon-circle {
+            background-color: var(--color-primario);
+            box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.5);
+        }
+        .category-wrapper.active .category-icon-circle i {
+            color: white;
+        }
+        .category-wrapper.active span {
+            color: var(--color-primario);
+            font-weight: 700;
         }
         
         /* OCULTAR ELEMENTOS VIEJOS DE FILTRO */
@@ -170,30 +219,16 @@
         
         /* 2. CAMBIO DE BANNER: IMAGEN DE BANNER */
         .main-banner { 
-            background-image: url('https://i.ibb.co/v4DgYG7h/34-sin-t-tulo-20251201083437.png'); /* URL de la imagen de banner */
+            background-image: url('https://i.ibb.co/v4DgYG7h/34-sin-t-tulo-20251201083437.png'); 
             background-size: cover;
             background-position: center;
-            height: 150px; /* Altura fija para el banner de imagen */
-            padding: 0; /* Quitar padding para que la imagen cubra todo */
+            height: 150px; 
+            padding: 0; 
             border-radius: 0;
             box-shadow: none;
             border-bottom: 1px solid #eee;
         }
-        /* Ocultar el texto dentro del banner */
         .main-banner h3, .main-banner p { display: none; }
-
-        /* Side Menu (Ajuste de color) */
-        #side-menu {
-            background-color: #ffffff; 
-            color: var(--color-negro);
-        }
-        .menu-item {
-            color: var(--color-negro);
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .menu-item:hover {
-            color: var(--color-primario);
-        }
 
         .info-bar { 
             display: flex; justify-content: space-around; padding: 10px 0; 
@@ -202,12 +237,11 @@
             color: var(--color-negro);
         }
         
-        /* FIX: Quitar potenciales separadores verticales (el "|") de la barra de información */
+        /* FIX: Quitar potenciales separadores verticales (el "|") */
         .info-item { 
             border-right: none !important; 
             border-left: none !important;
         }
-        /* FIX: Quitar potenciales separadores verticales (el "|") de la barra de detalles de producto */
         .detail-mid-info-bar > div {
             border-right: none !important;
             border-left: none !important;
@@ -222,7 +256,7 @@
             padding: 15px 10px 10px; 
             overflow-y: auto; 
             flex-grow: 1; 
-            background-color: transparent; /* Transparente para ver el fondo */
+            background-color: transparent; 
         }
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } 
         
@@ -233,7 +267,7 @@
             margin-bottom: 15px;
             border-left: 4px solid var(--color-primario);
             padding-left: 10px;
-            background-color: rgba(255, 255, 255, 0.8); /* Fondo claro para el título */
+            background-color: rgba(255, 255, 255, 0.8);
             padding-top: 5px;
             padding-bottom: 5px;
         }
@@ -250,7 +284,6 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .product-card:hover { transform: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); background-color: #fff; }
         .product-card img { width: 100%; height: 120px; object-fit: cover; display: block; background-color: #f5f5f5; }
         
         .product-details {
@@ -278,10 +311,9 @@
             padding: 2px 5px;
             border-radius: 3px;
             display: inline-block;
-            transition: background-color 0.3s ease; 
         }
         .free-shipping-tag {
-             background-color: #4CAF50; /* Verde */
+             background-color: #4CAF50;
              color: white;
              font-size: 10px;
              font-weight: bold;
@@ -291,7 +323,6 @@
              margin-left: 5px;
         }
         
-        /* Nuevo estilo para el botón Añadir al Carrito en el grid */
         .add-to-cart-grid-btn {
             width: 100%;
             padding: 5px;
@@ -303,23 +334,18 @@
             font-size: 13px;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.2s;
-        }
-        .add-to-cart-grid-btn:hover {
-            background-color: #d1302b; 
         }
 
-        /* Flash Sales / Liquidacion (Nueva estructura dinámica) */
         .flash-product-strip {
             display: flex;
             overflow-x: scroll; 
             gap: 10px; 
             padding: 5px 0 10px; 
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none; 
         }
         .flash-product-strip::-webkit-scrollbar {
-            display: none; /* Chrome, Safari */
+            display: none; 
         }
         
         .flash-item-card {
@@ -334,9 +360,9 @@
             text-align: center;
             cursor: pointer;
             flex-shrink: 0;
-            display: flex; /* Añadido para el botón */
-            flex-direction: column; /* Añadido para el botón */
-            justify-content: space-between; /* Añadido para el botón */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .flash-item-card img {
             width: 100%;
@@ -346,24 +372,7 @@
             margin-bottom: 5px;
             background-color: #f5f5f5;
         }
-        .flash-item-card .title {
-            font-size: 11px;
-            font-weight: 500;
-            margin-bottom: 3px;
-            height: 30px;
-            overflow: hidden;
-        }
-        .flash-item-card .price {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--color-primario);
-        }
-        .flash-item-card .tag-black-friday {
-            font-size: 9px;
-            padding: 1px 4px;
-            margin-top: 3px;
-        }
-        
+
         /* Footer Nav (Barra de abajo) */
         .footer-nav { 
             display: flex; justify-content: space-around; padding: 5px 0; border-top: 1px solid #ccc; 
@@ -396,53 +405,25 @@
         }
 
         /* Footer de Producto Detalle (Fijo) */
-        /* FIX CRÍTICO: Añadir posicionamiento y layout para que el botón de carrito se muestre correctamente */
         .detail-info-footer {
             background-color: #ffffff; 
             border-top: 1px solid #eee;
             position: fixed;
             bottom: 0;
             width: 100%;
-            max-width: 420px; /* Asegura que no se salga del contenedor principal */
+            max-width: 420px; 
             z-index: 30;
             padding: 10px 15px;
-            display: flex; /* Asegura que el contenido se muestre en línea */
+            display: flex; 
             justify-content: space-between;
             align-items: center;
         }
 
-        .detail-info-footer .price-box #footer-current-price {
-            color: var(--color-primario);
-        }
-        .detail-info-footer .add-to-cart-btn {
-            background-color: var(--color-primario); 
-            color: white;
-        }
-        .detail-info-footer .add-to-cart-btn .discount {
-            background-color: var(--color-secundario); 
-            color: white;
-        }
-
-        /* Otras vistas a Light Mode */
-        #registration-view, #profile-view, #cart-view, #privacy-policy-view {
-             background-color: var(--color-fondo-app);
-             color: var(--color-negro);
-        }
-        #registration-form input, #registration-form textarea {
-            border: 1px solid #ccc; 
-            background-color: #fff; 
-            color: var(--color-negro);
-        }
-        #registration-form button[type="submit"] {
-            background-color: var(--color-primario);
-            color: white;
-        }
-        
         /* --- ESTILO CRÍTICO DEL TOAST (NOTIFICACIÓN) --- */
         #app-toast {
             visibility: hidden;
             min-width: 250px;
-            background-color: var(--color-primario); /* Color primario para notificaciones */
+            background-color: var(--color-primario); 
             color: #fff;
             text-align: center;
             border-radius: 6px;
@@ -450,7 +431,7 @@
             position: fixed;
             z-index: 1000;
             left: 50%;
-            top: 0; /* Inicialmente fuera de la vista o en la parte superior */
+            top: 0; 
             transform: translateX(-50%) translateY(-100%);
             font-size: 14px;
             font-weight: bold;
@@ -460,92 +441,32 @@
         
         #app-toast.show {
             visibility: visible;
-            /* Se mueve hacia abajo 50px de la parte superior, creando un efecto de deslizamiento */
             transform: translateX(-50%) translateY(50px); 
             transition: transform 0.4s ease-out;
         }
-        /* --- FIN ESTILO TOAST --- */
-
-
         
-        /* --- CORRECCIÓN DE IMÁGENES GRANDES EN DETALLE (SLIDER) --- */
-        .detail-image-slider {
-            position: relative;
-            overflow: hidden; 
-            width: 200%;
-            height: 300px; /* Altura fija para el carrusel */
-            background-color: #f0f0f0;
-        }
-        .detail-image-slider {
-             background-color: #f0f0f0; /* Asegurar fondo para las fotos */
-        }
-        #slider-image-wrapper {
-            display: flex; 
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        .slider-image {
-            width: 100%;
-            height: 100%;
-            /* FIX CRÍTICO: Cambiado de 'contain' a 'cover' para que la imagen cubra todo el espacio */
-            object-fit: cover; 
-            position: ablute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        .slider-image.active {
-            opacity: 1;
+        /* --- VISOR DE IMAGEN EN PANTALLA COMPLETA --- */
+        #full-screen-image-viewer {
+            transition: opacity 0.3s ease;
         }
         
-        /* Estilos para el Side Menu (Asegurando que cubra lo necesario) */
-        #side-menu {
-            position: fixed;
-            top: 0;
-            left: -80%; /* Oculto inicialmente */
-            width: 80%;
-            max-width: 300px;
-            height: 100%;
-            background-color: #ffffff;
-            z-index: 100;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
-            transition: left 0.3s ease;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        #side-menu.open {
-            left: 0; /* Visible */
-        }
-        
-        .menu-item {
-             padding: 10px 0;
-             cursor: pointer;
-             font-size: 16px;
-             font-weight: 500;
-             display: flex;
-             align-items: center;
+        /* --- ESTILO DEL BOTÓN DE GUARDAR --- */
+        .view-header #save-product-btn {
+            transition: color 0.1s ease;
         }
         
     </style>
-        <meta property="og:title" content="Mise">
-<meta property="og:description" content="vende o compra productos.">
-<meta property="og:image" content="https://i.ibb.co/Hp1FxTHz/34-sin-t-tulo-20251201083437.png"> 
-<meta property="og:url" content="https://inmortal5.github.io/Mise2/">
-<meta property="og:type" content="website">
-    
 </head>
 <body>
 
     <div class="app-container">
 
         <div id="side-menu">
-             <div style="font-size: 20px; font-weight: bold; margin-bottom: 30px; color: var(--color-primario);">eCommerce App</div>
+             <div style="font-size: 20px; font-weight: bold; margin-bottom: 30px; color: var(--color-primario);">Mise</div>
             <div class="menu-item" onclick="handleMenuClick('main')"><i class="fa-solid fa-home" style="margin-right: 10px;"></i> Inicio</div>
             <div class="menu-item" onclick="handleMenuClick('profile')"><i class="fa-solid fa-user-circle" style="margin-right: 10px;"></i> Mi Perfil</div>
             <div class="menu-item" onclick="handleMenuClick('cart')"><i class="fa-solid fa-shopping-cart" style="margin-right: 10px;"></i> Carrito</div>
+            <div class="menu-item" onclick="handleMenuClick('saved')"><i class="fa-solid fa-heart" style="margin-right: 10px;"></i> Mis Guardados</div>
             <div class="menu-item" onclick="handleMenuClick('sell')"><i class="fa-solid fa-store" style="margin-right: 10px;"></i> Vender Mis Productos</div>
             <div class="menu-item" onclick="handleMenuClick('support')"><i class="fa-solid fa-question-circle" style="margin-right: 10px;"></i> Soporte y Ayuda</div>
             <div class="menu-item" onclick="handleMenuClick('privacy')"><i class="fa-solid fa-shield-alt" style="margin-right: 10px;"></i> Política de Privacidad</div>
@@ -573,7 +494,7 @@
                     <div data-category="hogar" class="category-menu-original" onclick="filterByCategory('hogar', this)">Hogar</div>
                     <div data-category="herramientas" class="category-menu-original" onclick="filterByCategory('herramientas', this)">Herramientas</div>
                     
-                    <div class="category-wrapper" data-category="all" onclick="filterByCategory('all', this)">
+                    <div class="category-wrapper active" data-category="all" onclick="filterByCategory('all', this)">
                         <div class="category-icon-circle"><i class="fa-solid fa-list-ul"></i></div>
                         <span>Todos</span>
                     </div>
@@ -620,18 +541,24 @@
         <div id="product-detail-view">
              <div class="view-header">
                 <i class="fa-solid fa-arrow-left" id="back-to-main"></i>
-                <div><i class="fa-solid fa-share-alt" style="color: var(--color-negro);"></i><i class="fa-solid fa-ellipsis-v" style="margin-left: 15px; color: var(--color-negro);"></i></div>
+                <h3 style="flex-grow: 1; text-align: center; margin-left: -20px;">Detalle del Producto</h3>
+                <div>
+                    <i class="fa-solid fa-heart icon-btn" id="save-product-btn" style="font-size: 20px; padding: 10px; cursor: pointer; color: var(--color-gris-medio);"></i>
+                    <i class="fa-solid fa-share-alt icon-btn" style="font-size: 20px; padding: 10px; cursor: pointer; color: var(--color-negro);"></i>
+                </div>
             </div>
             
-            <div class="detail-image-slider">
-                <button id="slider-prev" class="slider-nav-button"><i class="fa-solid fa-chevron-left"></i></button>
-                <button id="slider-next" class="slider-nav-button"><i class="fa-solid fa-chevron-right"></i></button>
-                <div class="slider-index" id="current-slider-index">1/4</div>
-                <div id="slider-image-wrapper">
-                    </div>
+            <div class="detail-main-image-slider-wrapper" style="width: 100%; height: 300px; background-color: #f0f0f0; overflow: hidden; position: relative;">
+                <img id="detail-main-image" src="" alt="Producto Principal" style="width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in;" onclick="openImageInFullScreen(this.src)">
+                <button id="slider-prev-btn" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 18px; z-index: 10;">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button id="slider-next-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; border-radius: 50%; cursor: pointer; font-size: 18px; z-index: 10;">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
             
-            <div class="selection-section">
+            <div class="selection-section" style="padding: 15px;">
                 <div class="detail-price-row" style="margin-bottom: 10px;">
                     <span class="detail-current-price price-value" id="detail-current-price" style="font-size: 24px; color: var(--color-primario); font-weight: 900;">$0.00</span>
                     <span class="detail-old-price" id="detail-old-price" style="font-size: 14px; color: var(--color-gris-medio); text-decoration: line-through; margin-left: 10px;">$0.00</span>
@@ -646,12 +573,12 @@
                 </div>
             </div>
 
-            <div class="time-limited-offer selection-section" style="background-color: #fff; border-bottom: 1px solid #eee;">
+            <div class="time-limited-offer selection-section" style="background-color: #fff; border-bottom: 1px solid #eee; padding: 15px;">
                 <p style="font-weight: bold; color: var(--color-secundario); margin-bottom: 5px;"><i class="fa-solid fa-bolt"></i> Oferta por Tiempo Limitado</p>
                 Termina en <span class="timer" id="detail-countdown-timer" style="font-weight: bold; color: var(--color-primario); font-size: 18px; margin-left: 5px;">00:00:00</span>
             </div>
             
-            <div class="selection-section" style="border-bottom: 8px solid #f0f0f0;">
+            <div class="selection-section" style="border-bottom: 8px solid #f0f0f0; padding: 15px;">
                 <div class="quantity-selector">
                     <h4 style="font-size: 16px; margin-bottom: 8px;">Cantidad</h4>
                     <div class="quantity-input-group" style="display: flex; align-items: center; gap: 10px;">
@@ -662,18 +589,22 @@
                 </div>
             </div>
             
-            <div class="detail-mid-info-bar selection-section" style="border-bottom: 8px solid #f0f0f0; display: flex; justify-content: space-around; text-align: center;">
+            <div class="detail-mid-info-bar selection-section" style="border-bottom: 8px solid #f0f0f0; display: flex; justify-content: space-around; text-align: center; padding: 15px;">
                 <div style="font-size: 12px;"><i class="fa-solid fa-truck" style="color: var(--color-primario);"></i> Envío Puerta a Puerta </div>
                 <div style="font-size: 12px;"><i class="fa-solid fa-undo" style="color: var(--color-primario);"></i> Devolución Fácil</div>
                 <div style="font-size: 12px;"><i class="fa-solid fa-shield-alt" style="color: var(--color-primario);"></i> Pago Seguro</div>
             </div>
             
-            <div class="detail-description-container">
+            <div class="detail-description-container" style="padding: 15px;">
                 <h4 style="font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Descripción y Detalles</h4>
-                <div id="detail-long-description" style="color: var(--color-negro); line-height: 1.5; font-size: 14px;">Descripción larga...</div>
+                <div id="detail-long-description" style="color: var(--color-negro); line-height: 1.5; font-size: 14px; margin-bottom: 20px;">Descripción larga...</div>
+                
+                <h4 style="font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 15px;">Galería de Imágenes</h4>
+                <div id="detail-image-gallery" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+                    </div>
             </div>
 
-            <div class="selection-section" id="similar-products-section" style="padding: 15px; border-bottom: 8px solid var(--color-fondo-app);">
+            <div class="selection-section" id="similar-products-section" style="padding: 15px; border-top: 8px solid var(--color-fondo-app); border-bottom: 8px solid var(--color-fondo-app);">
                 <h4 style="font-size: 16px; margin-bottom: 15px;">Productos Similares Recomendados</h4>
                 <div class="product-grid" id="similar-products-container">
                     </div>
@@ -697,20 +628,10 @@
 
                     <h4 style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 10px;">Dirección de Envío</h4>
                     <select id="reg-department" required style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background-color: #fff; color: var(--color-negro);">
-                            <option value="Ahuachapán">Ahuachapán</option>
-    <option value="Santa Ana">Santa Ana</option>
-    <option value="Sonsonate">Sonsonate</option>
-    <option value="Chalatenango">Chalatenango</option>
-    <option value="La Libertad">La Libertad</option>
-    <option value="San Salvador">San Salvador</option>
-    <option value="Cuscatlán">Cuscatlán</option>
-    <option value="La Paz">La Paz</option>
-    <option value="Cabañas">Cabañas</option>
-    <option value="San Vicente">San Vicente</option>
-    <option value="Usulután">Usulután</option>
-    <option value="San Miguel">San Miguel</option>
-    <option value="Morazán">Morazán</option>
-    <option value="La Unión">La Unión</option>
+                        <option value="">Seleccione Departamento</option>
+                        <option value="San Salvador">San Salvador</option>
+                        <option value="La Libertad">La Libertad</option>
+                        <option value="Santa Ana">Santa Ana</option>
                     </select>
                     <input type="text" id="reg-municipality" placeholder="Municipio" required>
                     <input type="text" id="reg-colony" placeholder="Colonia/Barrio" required>
@@ -736,6 +657,18 @@
                  <button onclick="showRegistrationForm()" style="width: 100%; padding: 10px; margin-top: 20px; border: 1px solid var(--color-primario); background-color: transparent; color: var(--color-primario); border-radius: 25px; font-weight: bold; cursor: pointer;">
                     Editar Datos de Perfil y Dirección
                  </button>
+            </div>
+        </div>
+        
+        <div id="saved-view">
+             <div class="view-header">
+                <i class="fa-solid fa-arrow-left" onclick="handleNavClick('main')"></i>
+                <h3>Mis Productos Guardados</h3>
+            </div>
+            <div style="padding: 15px;">
+                <p id="empty-saved-message" style="text-align: center; color: var(--color-gris-medio); padding: 30px;">Aún no has guardado ningún producto. ¡Guarda tus favoritos!</p>
+                <div id="saved-items-container" class="product-grid">
+                    </div>
             </div>
         </div>
 
@@ -769,25 +702,15 @@
             </div>
             <div style="padding: 15px;">
                 <h4 style="color: var(--color-primario); margin-bottom: 10px;">Recolección y Uso de Información</h4>
-                <p style="color: var(--color-negro); margin-bottom: 15px; font-size: 14px;">Política de Privacidad
-​Efectiva a partir de: 3 de Diciembre de 2025.
-​Esta Política de Privacidad describe cómo [Nombre de tu Empresa o Desarrollador] ("nosotros", "nuestro" o "la Aplicación") recopila, utiliza y divulga su información al usar la aplicación móvil [Nombre de tu App] (el "Servicio"). Su privacidad es fundamental para nosotros.
-​1. Recopilación de Información (Datos de Usuario y Uso Local): Recopilamos la siguiente información que usted nos proporciona voluntariamente en el formulario de registro y al realizar un pedido: Nombre Completo, Número de Teléfono (WhatsApp), Correo Electrónico y Dirección de Envío Completa. Esta información es esencial para procesar su pedido y comunicarnos con usted. Es importante notar que estos datos, junto con su Carrito de Compras, Historial de Productos Vistos y Preferencias de Categoría, se almacenan exclusivamente de forma local en el almacenamiento de su dispositivo (localStorage) y no se transmiten a nuestros servidores, a excepción de lo detallado en la sección de Checkout.
-​2. Recopilación de Información (Datos Automáticos - Publicidad): Nuestra aplicación incluye anuncios de terceros para su sostenimiento económico. Estos proveedores de publicidad (como Google AdMob u otros) recopilan cierta información de forma automática. Esto puede incluir Identificadores del Dispositivo (como el ID de publicidad de su dispositivo), Datos de Uso de la aplicación e Información de Localización General (basada en su dirección IP) con el fin de mostrar anuncios personalizados y relevantes, medir la efectividad de las campañas y limitar la frecuencia de los anuncios. Estos datos se procesan de acuerdo con las políticas de privacidad de los proveedores de publicidad aplicables, y le recomendamos consultarlas.
-​3. Uso de la Información: Utilizamos la información recopilada para los siguientes propósitos: a) Procesamiento de Pedidos: Su Nombre, Teléfono y Dirección se utilizan para generar un mensaje pre-llenado de pedido en la plataforma de WhatsApp, que se envía directamente a nuestro equipo de ventas para finalizar su compra, gestionar el pago y coordinar la entrega. b) Publicidad: Mostrar anuncios personalizados y relevantes. c) Personalización de la App: Usar sus datos locales de navegación (carrito, historial, preferencias) para mejorar su experiencia y sugerirle productos.
-​4. Compartición y Divulgación de la Información: No vendemos, alquilamos ni cedemos su información personal de contacto a terceros para fines de marketing directo. Compartimos sus datos únicamente de las siguientes maneras: a) Checkout a WhatsApp: Al iniciar el proceso de "Checkout", su información de contacto (Nombre, Teléfono, Dirección) se transfiere directamente a la plataforma de WhatsApp (https://wa.me/50375573427) para que nuestro equipo de ventas pueda gestionar la orden. Al usar la función de Checkout, usted acepta expresamente esta transferencia de datos a WhatsApp. b) Proveedores de Publicidad: Compartimos datos de su dispositivo y uso con nuestros socios publicitarios para la prestación de sus servicios. c) Obligación Legal: Podemos divulgar su información si así lo exige la ley o en respuesta a solicitudes válidas de autoridades públicas.
-​5. Seguridad, Retención y Sus Derechos: La seguridad de los datos almacenados localmente depende de la seguridad de su dispositivo. Retenemos sus datos solo durante el tiempo necesario para los fines establecidos. Usted tiene derecho a acceder, modificar y actualizar su información en la sección de "Perfil" de la aplicación. Puede eliminar sus datos locales borrando los datos de la aplicación o desinstalándola. Para optar por no recibir anuncios personalizados, puede desactivar o restablecer el identificador de publicidad de su dispositivo a través de la configuración de su sistema operativo móvil.
-​6. Contacto: Si tiene alguna pregunta o inquietud sobre esta Política de Privacidad o el manejo de sus datos, por favor contáctenos a través de: juamsteven503@gmail.com.
-​7. Cambios a la Política: Nos reservamos el derecho de actualizar esta Política de Privacidad periódicamente. Le notificaremos cualquier cambio publicando la nueva política en esta página y actualizando la fecha de "Efectiva a partir de" en la parte superior..</p>
-                <h4 style="color: var(--color-primario); margin-bottom: 10px;">Seguridad</h4>
+                <p style="color: var(--color-negro); font-size: 14px;">Recopilamos su nombre, teléfono, correo electrónico y dirección de envío a través del formulario de registro. También recopilamos datos de uso y del dispositivo (como el identificador de publicidad de su dispositivo) con el fin de mostrar anuncios personalizados y relevantes, medir la efectividad de las campañas y limitar la frecuencia de los anuncios. Estos datos se procesan de acuerdo con las políticas de privacidad de los proveedores de publicidad aplicables, y le recomendamos consultarlas. <br><br>3. Uso de la Información: Utilizamos la información recopilada para los siguientes propósitos: a) Procesamiento de Pedidos: Su Nombre, Teléfono y Dirección se utilizan para generar un mensaje pre-llenado de pedido en la plataforma de WhatsApp, que se envía directamente a nuestro equipo de ventas para finalizar su compra, gestionar el pago y coordinar la entrega. b) Publicidad: Mostrar anuncios personalizados y relevantes. c) Personalización de la App: Usar sus datos locales de navegación (carrito, historial, preferencias) para mejorar su experiencia y sugerirle productos. <br><br>4. Compartición y Divulgación de la Información: No vendemos, alquilamos ni cedemos su información personal de contacto a terceros para fines de marketing directo. Compartimos sus datos únicamente de las siguientes maneras: a) Checkout a WhatsApp: Al iniciar el proceso de "Checkout", su información de contacto (Nombre, Teléfono, Dirección) se transfiere directamente a la plataforma de WhatsApp (<a href="https://wa.me/50375573427" target="_blank">https://wa.me/50375573427</a>) para que nuestro equipo de ventas pueda gestionar la orden. Al usar la función de Checkout, usted acepta expresamente esta transferencia de datos a WhatsApp. b) Proveedores de Publicidad: Compartimos datos de su dispositivo y uso con nuestros socios publicitarios para la prestación de sus servicios. c) Obligación Legal: Podemos divulgar su información si así lo exige la ley o en respuesta a solicitudes válidas de autoridades públicas. <br><br>5. Seguridad, Retención y Sus Derechos: La seguridad de los datos almacenados localmente depende de la seguridad de su dispositivo. Retenemos sus datos solo durante el tiempo necesario para los fines establecidos. Usted tiene derecho a acceder, modificar y actualizar su información en la sección de "Perfil" de la aplicación. Puede eliminar sus datos locales borrando los datos de la aplicación o desinstalándola. Para optar por no recibir anuncios personalizados, puede desactivar o restablecer el identificador de publicidad en la configuración de su dispositivo. <br><br>6. Contacto: Si tiene preguntas o inquietudes sobre esta Política o el manejo de sus datos, por favor contáctenos a través de: juamsteven503@gmail.com. <br><br>7. Cambios a la Política: Nos reservamos el derecho de actualizar esta Política de Privacidad periódicamente. Le notificaremos cualquier cambio publicando la nueva política en esta página y actualizando la fecha de "Efectiva a partir de" en la parte superior.</p>
+                <h4 style="color: var(--color-primario); margin-top: 20px; margin-bottom: 10px;">Seguridad</h4>
                 <p style="color: var(--color-negro); font-size: 14px;">Aunque tomamos medidas razonables para proteger la información personal, ningún método de transmisión por Internet o almacenamiento electrónico es 100% seguro. Usamos un enlace seguro a WhatsApp para la finalización de la compra.</p>
             </div>
         </div>
 
-
         <footer class="footer-nav">
             <a href="#" class="nav-item active" data-view="main" onclick="handleNavClick('main')"><i class="fa-solid fa-house"></i>Inicio</a>
-            <a href="#" class="nav-item" data-view="categories" onclick="handleNavClick('main')"><i class="fa-solid fa-table-cells"></i>Categorías</a>
+            <a href="#" class="nav-item" data-view="saved" onclick="handleNavClick('saved')"><i class="fa-solid fa-heart"></i>Guardados</a>
             <a href="#" class="nav-item" data-view="profile" id="nav-profile-link" onclick="handleNavClick('profile')"><i class="fa-solid fa-user-circle"></i>Tú</a>
             <a href="#" class="nav-item" data-view="cart" onclick="handleNavClick('cart')">
                 <div class="cart-icon-wrapper">
@@ -797,117 +720,402 @@
                 Carrito
             </a>
         </footer>
-        
+
         <div class="detail-info-footer" id="detail-footer" style="display: none;">
             <div class="price-box">
-                <span id="footer-old-price">$0.00</span>
-                <span id="footer-current-price" class="price-value">$0.00</span>
+                <span id="footer-old-price" style="font-size: 12px; color: var(--color-gris-medio); text-decoration: line-through; margin-right: 5px;">$0.00</span>
+                <span id="footer-current-price" class="price-value" style="font-size: 20px; font-weight: bold;">$0.00</span>
             </div>
             <button class="add-to-cart-btn" onclick="addToCart()">
-                <span class="discount" id="footer-discount-tag">0% ¡AHORA!</span>
+                <span class="discount" id="footer-discount-tag" style="margin-right: 5px;">0% ¡AHORA!</span>
                 ¡Agrega al carrito!
             </button>
         </div>
-
-        <div id="app-toast"></div>
+        
+        <div id="app-toast">Mensaje de prueba</div>
+        
+        <div id="full-screen-image-viewer" onclick="closeImageInFullScreen()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; max-width: 420px; background-color: rgba(0, 0, 0, 0.9); z-index: 500; align-items: center; justify-content: center;">
+            <img id="full-screen-image" src="" alt="Imagen Zoom" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+            <i class="fa-solid fa-times" style="position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer;"></i>
+        </div>
 
     </div>
 
     <script>
-        // --- 1. BASE DE DATOS DE PRODUCTOS (CORREGIDA) ---
-        const PRODUCT_DATA = [
-            {
-                id: 1,
-                title: "Taladro inalambrico ⅜",
-                price: 50.00, oldPrice: 55.00, sales: '4.2K+', monthlyPayment: '3 cuotas de $16.67', 
-                basePrice: 50.00, discount: 9.09, isHidden: false, 
-                categories: ['herramientas', 'hogar'],
-                images: ["1762650273063.jpg","1762649958503.jpg", "1762650273063.jpg"],
-                longDescription: `<p>Taladro Atornillador Inalámbrico INGCO de 12V 🚀 ¡La herramienta que estabas buscando para tus proyectos en casa o en el trabajo, ahora a un precio increíble! Olvídate de los cables y disfruta de la potencia compacta y la calidad que solo INGCO te ofrece.</p><p>✅ Lo que incluye y lo hace IMBATIBLE: 1 Batería de 12V recargable, 1 Cargador rápido, Potente Motor de 20Nm de Torque.`,
-            },
-            {
-                id: 2,
-                title: "Mini Drone Plegable FPV 4K",
-                price: 75.00, oldPrice: 90.00, sales: '1.1K+', monthlyPayment: '3 cuotas de $25.00', 
-                basePrice: 75.00, discount: 16.67, isHidden: false, 
-                categories: ['tecnología', 'juguetes'],
-                images: ["https://picsum.photos/300/300?random=3", "https://picsum.photos/300/300?random=4"],
-                longDescription: `<p>El drone perfecto para principiantes. Plegable y con cámara 4K para videos nítidos. Incluye control remoto y maletín de transporte.</p><p>✅ Características: Control de altura, retorno automático, y 20 minutos de vuelo.`,
-            },
-            {
-                id: 3,
-                title: "Set de 3 Sartenes Antiadherentes",
-                price: 35.00, oldPrice: 40.00, sales: '8.7K+', monthlyPayment: '3 cuotas de $11.67', 
-                basePrice: 35.00, discount: 12.5, isHidden: false, 
-                categories: ['hogar', 'cocina'],
-                images: ["https://picsum.photos/300/300?random=5", "https://picsum.photos/300/300?random=6"],
-                longDescription: `<p>Set esencial de sartenes de alta calidad. Resistentes y fáciles de limpiar. Incluye tamaños: 20cm, 24cm y 28cm.</p><p>Ideal para cocinas de inducción y gas. ¡Cocina sin que se pegue nada!`,
-            },
-            {
-                id: 4,
-                title: "Zapatillas Deportivas Ultra Light",
-                price: 45.00, oldPrice: 50.00, sales: '1.5K+', monthlyPayment: '3 cuotas de $15.00', 
-                basePrice: 45.00, discount: 10.0, isHidden: false, 
-                categories: ['moda', 'deporte'],
-                images: ["https://picsum.photos/300/300?random=7", "https://picsum.photos/300/300?random=8"],
-                longDescription: `<p>Comodidad y estilo en un solo par. Ideales para correr o el uso diario. Material transpirable y suela antideslizante.</p><p>Disponibles en tallas 7 a 11.`,
-            },
-            {
-                id: 5,
-                title: "Smartwatch Deportivo Pro",
-                price: 99.99, oldPrice: 130.00, sales: '2.1K+', monthlyPayment: '3 cuotas de $33.33', 
-                basePrice: 99.99, discount: 23.08, isHidden: false, 
-                categories: ['tecnología', 'deporte'],
-                images: ["https://picsum.photos/300/300?random=9", "https://picsum.photos/300/300?random=10"],
-                longDescription: `<p>Monitor de ritmo cardíaco, GPS y batería de larga duración. Compatible con iOS y Android. Ideal para tracking de fitness.</p><p>Resistente al agua (IP68).`,
-            },
-            {
-                id: 6,
-                title: "Figura de Acción Coleccionable",
-                price: 25.00, oldPrice: 25.00, sales: '5.5K+', monthlyPayment: '', 
-                basePrice: 25.00, discount: 0.00, isHidden: false, 
-                categories: ['juguetes', 'coleccionables'],
-                images: ["https://picsum.photos/300/300?random=11", "https://picsum.photos/300/300?random=12"],
-                longDescription: `<p>Figura de alta calidad con articulaciones múltiples. Perfecto para coleccionistas.</p><p>Edición limitada.`,
-            }
-        ];
-        // --- FIN BASE DE DATOS DE PRODUCTOS ---
-
-
-        // --- 2. VARIABLES Y SETUP INICIAL ---
+        // --- CONSTANTES GLOBALES Y ESTADO ---
+        const SELL_PRODUCT_URL = "https://www.ejemplodeventa.com"; // Enlace simulado
+        let currentCategoryFilter = 'all'; 
+        let currentProduct = null; 
+        let cart = []; 
+        let savedProducts = []; // NUEVO: Array para IDs de productos guardados
+        let recentProducts = []; 
+        let countdownInterval; 
+        let currentImageIndex = 0; // ÍNDICE DEL SLIDER DE IMAGEN PRINCIPAL
+        
+        // --- VISTAS ---
         const mainAppContent = document.getElementById('main-app-content');
         const productDetailView = document.getElementById('product-detail-view');
         const registrationView = document.getElementById('registration-view');
         const profileView = document.getElementById('profile-view');
         const cartView = document.getElementById('cart-view');
         const privacyPolicyView = document.getElementById('privacy-policy-view');
+        const savedView = document.getElementById('saved-view'); // NUEVA VISTA
         const detailFooter = document.getElementById('detail-footer');
         const sideMenu = document.getElementById('side-menu');
         const menuOverlay = document.getElementById('menu-overlay');
+        const sliderPrevBtn = document.getElementById('slider-prev-btn');
+        const sliderNextBtn = document.getElementById('slider-next-btn');
 
-        // Elementos de slider (definidos globalmente)
-        const sliderPrevBtn = document.getElementById('slider-prev');
-        const sliderNextBtn = document.getElementById('slider-next');
+        // --- BASE DE DATOS DE PRODUCTOS (SIMULADA) ---
+        const PRODUCT_DATA = [
+            { 
+                id: 1, 
+                title: "Katana japonesa", 
+                price: 9.99, 
+                oldPrice: 70.00, 
+                sales: '2.5K+', 
+                monthlyPayment: '1 cuotas de $9.99', 
+                basePrice: 9.99, 
+                discount: 85.73, 
+                isHidden: false, 
+                categories: ['juguetes', 'coleccionables'],
+                images: ["https://picsum.photos/300/300?random=1", "https://picsum.photos/300/300?random=2", "https://picsum.photos/300/300?random=101", "https://picsum.photos/300/300?random=102"], 
+                longDescription: `<p>Imitacion o replica de katana japonesa roja y negro ,echa a mano con acero de bajo carbono ,mango de metal con envoltura de tela y encintado de algodon con poliester,mango desarmable,medida 70cm ,oja de 55 cm mango de 15 cm,sin filo   .</p><p>Incluye funda de madera forrada con tela de poliester con correa para decoracion`,
+            },
+            { 
+                id: 2, 
+                title: "Camiseta Deportiva 'CoolFit' (Tallas S-XL)", 
+                price: 15.99, 
+                oldPrice: 19.99, 
+                sales: '800+', 
+                monthlyPayment: '1 cuota de $15.99', 
+                basePrice: 15.99, 
+                discount: 20.01, 
+                isHidden: false, 
+                categories: ['moda', 'deporte'], 
+                images: ["https://picsum.photos/300/300?random=3", "https://picsum.photos/300/300?random=4", "https://picsum.photos/300/300?random=33"], 
+                longDescription: `<p>Tela transpirable de secado rápido. Perfecta para el gimnasio o actividades al aire libre. Disponible en colores azul y negro.</p><p>100% poliéster.`,
+            },
+            { 
+                id: 3, 
+                title: "Set de Sartenes Antiadherentes (3 Piezas)", 
+                price: 35.00, 
+                oldPrice: 40.00, 
+                sales: '1.2K+', 
+                monthlyPayment: '3 cuotas de $11.67', 
+                basePrice: 35.00, 
+                discount: 12.5, 
+                isHidden: false, 
+                categories: ['hogar', 'cocina'], 
+                images: ["https://picsum.photos/300/300?random=5", "https://picsum.photos/300/300?random=6", "https://picsum.photos/300/300?random=55", "https://picsum.photos/300/300?random=66"], 
+                longDescription: `<p>Set esencial de sartenes de alta calidad. Resistentes y fáciles de limpiar. Incluye tamaños: 20cm, 24cm y 28cm.</p><p>Ideal para cocinas de inducción y gas. ¡Cocina sin que se pegue nada!`,
+            },
+            { 
+                id: 4, 
+                title: "Zapatillas Deportivas Ultra Light", 
+                price: 45.00, 
+                oldPrice: 50.00, 
+                sales: '1.5K+', 
+                monthlyPayment: '3 cuotas de $15.00', 
+                basePrice: 45.00, 
+                discount: 10.0, 
+                isHidden: false, 
+                categories: ['moda', 'deporte'], 
+                images: ["https://picsum.photos/300/300?random=7", "https://picsum.photos/300/300?random=8"], 
+                longDescription: `<p>Comodidad y estilo en un solo par. Ideales para correr o el uso diario. Material transpirable y suela antideslizante.</p><p>Disponibles en tallas 7 a 11.`,
+            },
+            { 
+                id: 5, 
+                title: "Smartwatch Deportivo Pro", 
+                price: 99.99, 
+                oldPrice: 130.00, 
+                sales: '2.1K+', 
+                monthlyPayment: '3 cuotas de $33.33', 
+                basePrice: 99.99, 
+                discount: 23.08, 
+                isHidden: false, 
+                categories: ['tecnología', 'deporte'], 
+                images: ["https://picsum.photos/300/300?random=9", "https://picsum.photos/300/300?random=10"], 
+                longDescription: `<p>Monitor de ritmo cardíaco, GPS y batería de larga duración. Compatible con iOS y Android. Ideal para tracking de fitness.</p><p>Resistente al agua (IP68).`,
+            },
+            { 
+                id: 6, 
+                title: "Muñeca de Colección 'Princesa Estelar'", 
+                price: 18.50, 
+                oldPrice: 20.00, 
+                sales: '450+', 
+                monthlyPayment: '1 cuota de $18.50', 
+                basePrice: 18.50, 
+                discount: 7.5, 
+                isHidden: false, 
+                categories: ['juguetes', 'coleccionables'], 
+                images: ["https://picsum.photos/300/300?random=11"], 
+                longDescription: `<p>Muñeca articulada con accesorios de lujo. Edición limitada con vestido brillante. Recomendado para mayores de 6 años.</p>`,
+            },
+            { 
+                id: 7, 
+                title: "Destornillador Eléctrico Recargable", 
+                price: 39.99, 
+                oldPrice: 45.00, 
+                sales: '900+', 
+                monthlyPayment: '3 cuotas de $13.33', 
+                basePrice: 39.99, 
+                discount: 11.13, 
+                isHidden: false, 
+                categories: ['herramientas', 'electricidad'], 
+                images: ["https://picsum.photos/300/300?random=12"], 
+                longDescription: `<p>Potente destornillador con batería de litio. Incluye 12 puntas intercambiables y luz LED integrada. Perfecto para el hogar.</p>`,
+            },
+            { 
+                id: 8, 
+                title: "Pantalón de Jeans Slim Fit Hombre", 
+                price: 29.99, 
+                oldPrice: 35.00, 
+                sales: '1.1K+', 
+                monthlyPayment: '2 cuotas de $15.00', 
+                basePrice: 29.99, 
+                discount: 14.31, 
+                isHidden: false, 
+                categories: ['moda'], 
+                images: ["https://picsum.photos/300/300?random=13", "https://picsum.photos/300/300?random=13b"], 
+                longDescription: `<p>Jeans de corte Slim Fit, cómodos y modernos. Material elástico de alta durabilidad. Disponible en colores: azul oscuro, negro.</p>`,
+            },
+            { 
+                id: 9, 
+                title: "Router Wi-Fi Mesh Doble Banda", 
+                price: 120.00, 
+                oldPrice: 150.00, 
+                sales: '500+', 
+                monthlyPayment: '3 cuotas de $40.00', 
+                basePrice: 120.00, 
+                discount: 20.0, 
+                isHidden: false, 
+                categories: ['tecnología', 'redes'], 
+                images: ["https://picsum.photos/300/300?random=14"], 
+                longDescription: `<p>Cubre hasta 200m² con una señal Wi-Fi estable y rápida. Ideal para hogares con múltiples dispositivos conectados. Configuración sencilla.</p>`,
+            },
+            { 
+                id: 10, 
+                title: "Alfombra Persa de Lana (2x3 metros)", 
+                price: 89.99, 
+                oldPrice: 110.00, 
+                sales: '300+', 
+                monthlyPayment: '3 cuotas de $30.00', 
+                basePrice: 89.99, 
+                discount: 18.19, 
+                isHidden: false, 
+                categories: ['hogar', 'decoración'], 
+                images: ["https://picsum.photos/300/300?random=15", "https://picsum.photos/300/300?random=15b"], 
+                longDescription: `<p>Diseño clásico y elegante. Hecha con lana de alta calidad, suave al tacto y resistente. Perfecta para salón o comedor.</p>`,
+            },
+            { 
+                id: 11, 
+                title: "Set de Manicura y Pedicura Profesional", 
+                price: 12.99, 
+                oldPrice: 15.00, 
+                sales: '600+', 
+                monthlyPayment: '1 cuota de $12.99', 
+                basePrice: 12.99, 
+                discount: 13.4, 
+                isHidden: false, 
+                categories: ['moda', 'belleza'], 
+                images: ["https://picsum.photos/300/300?random=16"], 
+                longDescription: `<p>Kit completo con 15 herramientas de acero inoxidable. Ideal para el cuidado personal en casa o profesional.</p>`,
+            },
+            { 
+                id: 12, 
+                title: "Kit de Robot de Construcción Educativo", 
+                price: 55.00, 
+                oldPrice: 60.00, 
+                sales: '750+', 
+                monthlyPayment: '3 cuotas de $18.33', 
+                basePrice: 55.00, 
+                discount: 8.33, 
+                isHidden: false, 
+                categories: ['juguetes', 'educativo'], 
+                images: ["https://picsum.photos/300/300?random=17"], 
+                longDescription: `<p>Aprende sobre programación y robótica de forma divertida. Incluye motor y sensores. Requiere 2 pilas AA (no incluidas).</p>`,
+            },
+            { 
+                id: 13, 
+                title: "Juego de Cuchillos de Chef (6 Piezas)", 
+                price: 49.99, 
+                oldPrice: 60.00, 
+                sales: '950+', 
+                monthlyPayment: '3 cuotas de $16.66', 
+                basePrice: 49.99, 
+                discount: 16.68, 
+                isHidden: false, 
+                categories: ['hogar', 'cocina'], 
+                images: ["https://picsum.photos/300/300?random=18"], 
+                longDescription: `<p>Cuchillos de acero inoxidable de alto carbono. Mango ergonómico para un agarre seguro. Bloque de madera incluido.</p>`,
+            },
+            { 
+                id: 14, 
+                title: "Martillo de Uña Curva", 
+                price: 9.99, 
+                oldPrice: 12.00, 
+                sales: '1.2K+', 
+                monthlyPayment: '1 cuota de $9.99', 
+                basePrice: 9.99, 
+                discount: 16.75, 
+                isHidden: false, 
+                categories: ['herramientas'], 
+                images: ["https://picsum.photos/300/300?random=19", "https://picsum.photos/300/300?random=19b"], 
+                longDescription: `<p>Martillo de 16 oz con cabeza de acero forjado. Mango de fibra de vidrio para reducir la vibración. Calidad profesional.</p>`,
+            },
+            { 
+                id: 15, 
+                title: "Mochila Antirrobo para Laptop", 
+                price: 34.99, 
+                oldPrice: 40.00, 
+                sales: '1.8K+', 
+                monthlyPayment: '2 cuotas de $17.50', 
+                basePrice: 34.99, 
+                discount: 12.53, 
+                isHidden: false, 
+                categories: ['tecnología', 'moda'], 
+                images: ["https://picsum.photos/300/300?random=20"], 
+                longDescription: `<p>Mochila con diseño ergonómico y sistema antirrobo oculto. Bolsillo para laptop de hasta 15.6 pulgadas y puerto USB de carga.</p>`,
+            },
+            { 
+                id: 16, 
+                title: "Lentes de Sol Polarizados UV400", 
+                price: 22.00, 
+                oldPrice: 28.00, 
+                sales: '700+', 
+                monthlyPayment: '1 cuota de $22.00', 
+                basePrice: 22.00, 
+                discount: 21.43, 
+                isHidden: false, 
+                categories: ['moda', 'accesorios'], 
+                images: ["https://picsum.photos/300/300?random=21"], 
+                longDescription: `<p>Protección total UV400 y lentes polarizados para reducir el deslumbramiento. Marco ligero y resistente. Estilo unisex.</p>`,
+            },
+            { 
+                id: 17, 
+                title: "Juego de Carros a Control Remoto", 
+                price: 28.00, 
+                oldPrice: 32.00, 
+                sales: '500+', 
+                monthlyPayment: '2 cuotas de $14.00', 
+                basePrice: 28.00, 
+                discount: 12.5, 
+                isHidden: false, 
+                categories: ['juguetes'], 
+                images: ["https://picsum.photos/300/300?random=17b"], 
+                longDescription: `<p>Set de dos carros de carreras a escala con control remoto de 2.4GHz. Baterías recargables incluidas. Ideal para competir con amigos.</p>`,
+            },
+            { 
+                id: 18, 
+                title: "Set de Brocas y Puntas para Taladro", 
+                price: 19.99, 
+                oldPrice: 25.00, 
+                sales: '850+', 
+                monthlyPayment: '1 cuota de $19.99', 
+                basePrice: 19.99, 
+                discount: 20.04, 
+                isHidden: false, 
+                categories: ['herramientas'], 
+                images: ["https://picsum.photos/300/300?random=19c"], 
+                longDescription: `<p>Juego de 50 piezas para perforar y atornillar. Incluye estuche organizador. Acero de alta velocidad (HSS).</p>`,
+            },
+            { 
+                id: 19, 
+                title: "Pijama de Seda para Mujer", 
+                price: 32.00, 
+                oldPrice: 40.00, 
+                sales: '400+', 
+                monthlyPayment: '2 cuotas de $16.00', 
+                basePrice: 32.00, 
+                discount: 20.0, 
+                isHidden: false, 
+                categories: ['moda', 'ropa'], 
+                images: ["https://picsum.photos/300/300?random=13c"], 
+                longDescription: `<p>Pijama de dos piezas, suave y lujosa, ideal para un descanso confortable. Disponible en tallas S, M, L.</p>`,
+            },
+            { 
+                id: 20, 
+                title: "Batidora de Mano Eléctrica", 
+                price: 28.50, 
+                oldPrice: 35.00, 
+                sales: '600+', 
+                monthlyPayment: '2 cuotas de $14.25', 
+                basePrice: 28.50, 
+                discount: 18.57, 
+                isHidden: false, 
+                categories: ['hogar', 'cocina'], 
+                images: ["https://picsum.photos/300/300?random=5b", "https://picsum.photos/300/300?random=5c"], 
+                longDescription: `<p>Batidora con 5 velocidades y función turbo. Incluye ganchos para masa y batidores. Potencia de 300W.</p>`,
+            },
+            { 
+                id: 21, 
+                title: "Tablet 10 Pulgadas HD", 
+                price: 150.00, 
+                oldPrice: 180.00, 
+                sales: '900+', 
+                monthlyPayment: '3 cuotas de $50.00', 
+                basePrice: 150.00, 
+                discount: 16.67, 
+                isHidden: false, 
+                categories: ['tecnología', 'portátiles'], 
+                images: ["https://picsum.photos/300/300?random=20b", "https://picsum.photos/300/300?random=20c"], 
+                longDescription: `<p>Pantalla HD de 10.1", 4GB de RAM y 64GB de almacenamiento (expandible). Batería de larga duración. Perfecta para multimedia.</p>`,
+            },
+            { 
+                id: 22, 
+                title: "Mesa de Centro Industrial", 
+                price: 65.00, 
+                oldPrice: 80.00, 
+                sales: '500+', 
+                monthlyPayment: '3 cuotas de $21.67', 
+                basePrice: 65.00, 
+                discount: 18.75, 
+                isHidden: false, 
+                categories: ['hogar', 'muebles'], 
+                images: ["https://picsum.photos/300/300?random=22", "https://picsum.photos/300/300?random=22b"], 
+                longDescription: `<p>Mesa de centro con diseño minimalista e industrial. Tapa de madera y patas de metal reforzado. Ideal para salas modernas.</p>`
+            }
+            ,
+            { 
+                id: 23, 
+                title: "Set de Ladrillos Magnéticos", 
+                price: 29.99, 
+                oldPrice: 35.00, 
+                sales: '700+', 
+                monthlyPayment: '3 cuotas de $10.00', 
+                basePrice: 29.99, 
+                discount: 14.3, 
+                isHidden: false, 
+                categories: ['juguetes', 'educativo'], 
+                images: ["https://picsum.photos/300/300?random=23", "https://picsum.photos/300/300?random=23b", "https://picsum.photos/300/300?random=23c"], 
+                longDescription: `<p>Juego de construcción magnético para el desarrollo creativo y motor de los niños. Incluye 50 piezas de colores.</p>`
+            },
+            { 
+                id: 24, 
+                title: "Llave Ajustable de Cromo Vanadio", 
+                price: 14.50, 
+                oldPrice: 16.00, 
+                sales: '2K+', 
+                monthlyPayment: '1 cuota de $14.50', 
+                basePrice: 14.50, 
+                discount: 9.4, 
+                isHidden: false, 
+                categories: ['herramientas'], 
+                images: ["https://picsum.photos/300/300?random=24", "https://picsum.photos/300/300?random=24b", "https://picsum.photos/300/300?random=24c"], 
+                longDescription: `<p>Llave de alta resistencia con apertura de boca ajustable. Indispensable en cualquier caja de herramientas.</p>`
+            }
+        ]; 
 
-        // Variables de estado
-        let recentProducts = []; // Array que almacena los productos vistos recientemente (por ID)
-        let cart = []; // Array que almacena los items del carrito {id, title, price, image, quantity}
-        let currentProductId = null; // ID del producto que se está viendo en detalle
-        
-        const WHATSAPP_NUMBER = "50375573427";
-        const SELL_PRODUCT_URL = "https://www.socialcreator.com/publicarmiproductoenmise"; // ENLACE A CAMBIAR POR EL USUARIO
-        
-        let currentCategoryFilter = 'all';
-        let countdownInterval;
-        let currentImageIndex = 0;
-        let sliderImageElements = [];
-
-
-        // --- FUNCIONES DE UTILIDAD ---
-        function formatCurrency(number) {
-            return `$${number.toFixed(2)}`;
+        // --- 1. CONFIGURACIÓN INICIAL Y UTILITIES ---
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-SV', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount);
         }
-        
+
         function calculateDiscount(currentPrice, oldPrice) {
             if (oldPrice > currentPrice && oldPrice > 0) {
                 return Math.round(((oldPrice - currentPrice) / oldPrice) * 100);
@@ -915,16 +1123,7 @@
             return 0;
         }
 
-        // Esta función se mantiene vacía para evitar errores de referencia, pero no hace nada.
-        window.startPriceVolatility = function() {
-            // Precio Volátil DESACTIVADO: La lógica fue eliminada a petición del usuario.
-        };
-
-
-        // --- FIN LÓGICA DE PRECIOS VOLÁTILES ---
-
-        // --- FUNCIONES DE PERSISTENCIA (CART & RECENT PRODUCTS) ---
-
+        // --- FUNCIONES DE PERSISTENCIA (CART & RECENT PRODUCTS & SAVED) ---
         function saveCart() {
             localStorage.setItem('shoppingCart', JSON.stringify(cart));
         }
@@ -937,7 +1136,6 @@
 
         function updateCartBadge() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            // Asegúrate de que el badge de cuenta esté actualizado
             const badge = document.getElementById('cart-count-badge');
             if (badge) {
                 badge.textContent = totalItems;
@@ -951,50 +1149,45 @@
                 recentProducts = savedIds.map(id => PRODUCT_DATA.find(p => p.id === id)).filter(p => p !== undefined);
             }
         }
+        
+        // NUEVAS FUNCIONES DE PERSISTENCIA DE GUARDADOS
+        function saveSavedProducts() {
+            localStorage.setItem('savedProducts', JSON.stringify(savedProducts));
+        }
+
+        function loadSavedProducts() {
+            const saved = localStorage.getItem('savedProducts');
+            savedProducts = saved ? JSON.parse(saved) : [];
+        }
 
         function saveRecentProducts() {
             const productIds = recentProducts.map(p => p.id);
             localStorage.setItem('recentProducts', JSON.stringify(productIds));
         }
-
         // --- FIN PERSISTENCIA ---
 
         // --- 3. LÓGICA DE VISTAS Y NAVEGACIÓN ---
-
         function showToast(message) {
             const toast = document.getElementById('app-toast');
-            // Asegurarse de que el toast esté en el DOM antes de usarlo
-            if (!toast) return; 
-            
-            // Si ya está visible, limpiamos el temporizador y lo mostramos de nuevo
+            if (!toast) return;
+
             clearTimeout(toast.timeoutId);
             toast.classList.remove('show');
 
-            // Pequeño retardo para forzar el reinicio de la animación si se llama rápidamente
             setTimeout(() => {
                 toast.textContent = message;
                 toast.classList.add('show');
-                
-                // Configurar el tiempo de auto-ocultamiento
                 toast.timeoutId = setTimeout(() => {
                     toast.classList.remove('show');
-                }, 3000); 
-            }, 50); 
+                }, 3000);
+            }, 50);
         }
 
         function hideAllViews() {
-            mainAppContent.style.display = 'none';
-            productDetailView.style.display = 'none';
-            registrationView.style.display = 'none';
-            profileView.style.display = 'none';
-            cartView.style.display = 'none';
-            privacyPolicyView.style.display = 'none';
-            detailFooter.style.display = 'none';
-            sideMenu.classList.remove('open');
-            menuOverlay.style.display = 'none';
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-            }
+            [mainAppContent, productDetailView, registrationView, profileView, cartView, privacyPolicyView, savedView].forEach(view => {
+                view.style.display = 'none';
+            });
+            detailFooter.style.display = 'none'; 
             document.querySelectorAll('.footer-nav .nav-item').forEach(item => {
                 item.classList.remove('active');
             });
@@ -1002,31 +1195,52 @@
 
         window.handleNavClick = function(viewName) {
             hideAllViews();
+            let targetView;
+            let navItem;
 
-            const navItem = document.querySelector(`.footer-nav a[data-view="${viewName}"]`);
-            if (navItem) {
-                navItem.classList.add('active');
+            switch (viewName) {
+                case 'main':
+                    targetView = mainAppContent;
+                    navItem = document.querySelector('.footer-nav .nav-item[data-view="main"]');
+                    renderProducts(PRODUCT_DATA); 
+                    break;
+                case 'profile':
+                    showProfileView();
+                    navItem = document.querySelector('.footer-nav .nav-item[data-view="profile"]');
+                    return; 
+                case 'cart':
+                    showCartView();
+                    navItem = document.querySelector('.footer-nav .nav-item[data-view="cart"]');
+                    return; 
+                case 'saved': // NUEVO: Navegación a Guardados
+                    showSavedView();
+                    navItem = document.querySelector('.footer-nav .nav-item[data-view="saved"]');
+                    return;
+                default:
+                    return;
             }
 
-            if (viewName === 'main') {
-                mainAppContent.style.display = 'flex';
-                // Recargar productos en la vista principal
-                renderProducts(PRODUCT_DATA.filter(p => !p.isHidden), false);
-
-            } else if (viewName === 'profile') {
-                const userDataString = localStorage.getItem('userProfileData');
-                if (userDataString) {
-                    showProfileView(JSON.parse(userDataString));
-                } else {
-                    showRegistrationForm();
+            if (targetView) {
+                targetView.style.display = 'flex'; 
+                if (navItem) {
+                    navItem.classList.add('active');
                 }
-
-            } else if (viewName === 'cart') {
-                showCartView();
             }
-            // Otras vistas se manejan en handleMenuClick si se acceden desde el side menu.
+        }
+        
+        window.openImageInFullScreen = function(src) {
+            const viewer = document.getElementById('full-screen-image-viewer');
+            document.getElementById('full-screen-image').src = src;
+            viewer.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
         }
 
+        window.closeImageInFullScreen = function() {
+            document.getElementById('full-screen-image-viewer').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // FIX: Se garantiza que el menú lateral se abra/cierre correctamente.
         window.toggleSideMenu = function() {
             const isOpen = sideMenu.classList.contains('open');
             sideMenu.classList.toggle('open', !isOpen);
@@ -1034,13 +1248,15 @@
         }
 
         window.handleMenuClick = function(action) {
-            toggleSideMenu(); // Cerrar el menú después del clic
+            toggleSideMenu(); 
             if (action === 'main') {
                 handleNavClick('main');
             } else if (action === 'profile') {
                 handleNavClick('profile');
             } else if (action === 'cart') {
                 handleNavClick('cart');
+            } else if (action === 'saved') {
+                handleNavClick('saved');
             } else if (action === 'sell') {
                 window.open(SELL_PRODUCT_URL, '_blank');
                 showToast("🌐 Abriendo enlace para Vender Productos...");
@@ -1054,45 +1270,54 @@
                 logout();
             }
         }
-        
-        // NUEVA FUNCIÓN: Abre el enlace de venta al hacer clic en el nuevo icono del header
+
         window.openSellLink = function() {
             window.open(SELL_PRODUCT_URL, '_blank');
             showToast("🌐 Abriendo enlace para Vender Aquí...");
         };
-
         // --- FIN LÓGICA DE VISTAS ---
 
         // --- 4. LÓGICA DE FILTRADO Y PRODUCTOS ---
-
         const productListContainer = document.getElementById('product-list-container');
         const noResultsMessage = document.getElementById('no-results-message');
 
         function createProductCardHTML(product) {
-            // Se asume que product.price es ahora fijo (basePrice)
+            const isFreeShipping = product.oldPrice > 50; 
             return `
-                <div class="product-card product-link" data-product-id="${product.id}">
+                <div class="product-card product-link" data-product-id="${product.id}" onclick="showProductDetail(${product.id})">
                     <img src="${product.images[0]}" alt="${product.title}">
                     <div class="product-details">
-                        <p>${product.title.substring(0, 35)}${product.title.length > 35 ? '...' : ''}</p>
+                        <p style="font-size: 13px; margin-bottom: 5px; color: var(--color-negro);">${product.title.substring(0, 35)}${product.title.length > 35 ? '...' : ''}</p>
                         <div style="font-size: 10px; color: gold;">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-                            <span style="color: var(--color-gris-medio); margin-left: 5px;">(${product.sales})</span>
+                            <span style="color: var(--color-gris-medio); margin-left: 5px;">(4.5)</span>
                         </div>
-                        <div class="product-price">
-                            <span class="current-price price-value" 
-                                data-product-id="${product.id}" 
-                                data-base-price="${product.basePrice}" 
-                                data-old-price="${product.oldPrice}"
-                            >${formatCurrency(product.price)}</span>
+                        <div class="product-price" style="margin-top: 5px;">
+                            <span class="current-price">${formatCurrency(product.price)}</span>
                             <span class="old-price">${formatCurrency(product.oldPrice)}</span>
                         </div>
-                        <div style="margin-top: 5px;">
-                            <span class="tag-black-friday">-${product.discount.toFixed(0)}% DESC.</span>
-                            ${product.id === 4 ? '<span class="free-shipping-tag">Envío gratis</span>' : ''}
+                        <div style="margin-top: 5px; min-height: 20px;">
+                             <span class="tag-black-friday">${product.discount.toFixed(0)}% OFF</span>
+                             ${isFreeShipping ? `<span class="free-shipping-tag">ENVÍO GRATIS</span>` : ''}
                         </div>
                         <button class="add-to-cart-grid-btn" onclick="addToCartGrid(event, ${product.id})">
-                            <i class="fa-solid fa-cart-plus"></i> Añadir
+                             <i class="fa-solid fa-cart-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createFlashSaleItemHTML(product) {
+            return `
+                <div class="flash-item-card product-link" data-product-id="${product.id}" onclick="showProductDetail(${product.id})">
+                    <img src="${product.images[0]}" alt="${product.title}">
+                    <div class="item-details">
+                        <div class="title">${product.title.substring(0, 25)}${product.title.length > 25 ? '...' : ''}</div>
+                        <div class="price">${formatCurrency(product.price)}</div>
+                        <span class="tag-black-friday">${product.discount.toFixed(0)}% DESC.</span>
+                        <button class="add-to-cart-grid-btn" onclick="addToCartGrid(event, ${product.id})" style="margin-top: 5px; padding: 3px 0; font-size: 12px;">
+                             <i class="fa-solid fa-cart-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -1100,54 +1325,43 @@
         }
 
         function getPersonalizedProducts(products, preferredCategory) {
-            if (!preferredCategory || preferredCategory === 'all') return products;
-
-            preferredCategory = preferredCategory.toLowerCase();
-            const preferredProducts = products.filter(p => p.categories && p.categories.includes(preferredCategory));
-            const otherProducts = products.filter(p => !p.categories || !p.categories.includes(preferredCategory));
-
-            function shuffle(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
+            if (!preferredCategory || preferredCategory === 'all') {
+                return [...products].sort(() => 0.5 - Math.random());
             }
 
-            shuffle(preferredProducts);
-            shuffle(otherProducts);
+            const preferredProducts = products.filter(p => p.categories.includes(preferredCategory));
+            const otherProducts = products.filter(p => !p.categories.includes(preferredCategory));
+
+            preferredProducts.sort(() => 0.5 - Math.random());
+            otherProducts.sort(() => 0.5 - Math.random());
 
             const finalProducts = [];
-            let i = 0, j = 0;
-            let preferredCount = 0;
+            let i = 0; 
+            let j = 0; 
+            let preferredCount = 0; 
 
             while (i < preferredProducts.length || j < otherProducts.length) {
-                // Agregar 2 productos preferidos (si hay)
                 if (i < preferredProducts.length && preferredCount < 2) {
                     finalProducts.push(preferredProducts[i++]);
                     preferredCount++;
                 } 
-                // Agregar 1 producto no preferido (si hay)
                 else if (j < otherProducts.length) {
                     finalProducts.push(otherProducts[j++]);
-                    preferredCount = 0; // Resetear contador para empezar el ciclo de nuevo
+                    preferredCount = 0; 
                 } 
-                // Si solo quedan preferidos, agregarlos
                 else if (i < preferredProducts.length) {
                     finalProducts.push(preferredProducts[i++]);
                 } 
-                // Si solo quedan otros, agregarlos
                 else if (j < otherProducts.length) {
                     finalProducts.push(otherProducts[j++]);
                 }
             }
-
             return finalProducts;
         }
 
 
         function renderProducts(products = PRODUCT_DATA, isSearching = false) {
             productListContainer.innerHTML = '';
-            
             const preferredCategory = localStorage.getItem('userLastViewedCategory');
             let finalProducts = products;
 
@@ -1156,8 +1370,7 @@
             } else if (!isSearching && currentCategoryFilter !== 'all') {
                 finalProducts = products.filter(p => p.categories.includes(currentCategoryFilter));
             }
-
-            // Actualizar título de la sección
+            
             if (isSearching) {
                 document.querySelector('.section-title').textContent = `🔍 Resultados para "${document.getElementById('search-input').value.trim()}"`;
             } else {
@@ -1172,91 +1385,89 @@
             }
 
             if (!isSearching && currentCategoryFilter === 'all') {
-                // 1. Lógica para el nuevo carrusel de Ofertas Agresivas Variadas
-                // Filtra productos que tienen un descuento real (oldPrice > basePrice)
                 const aggressiveOffers = PRODUCT_DATA.filter(p => p.oldPrice > p.basePrice).sort(() => 0.5 - Math.random()).slice(0, 10);
                 const flashSaleContent = `
                     <div class="flash-liquidation-dynamic" style="margin-bottom: 20px; padding: 0 5px;">
                         <h4 class="section-title" style="font-size: 18px; margin-bottom: 10px; border-left-color: var(--color-secundario); color: var(--color-secundario);">
-                            <i class="fa-solid fa-fire"></i> ¡OFERTAS AGRESIVAS! <span style="font-size: 12px; margin-left: 10px; color: var(--color-gris-medio); font-weight: normal;">Desliza para ver más ></span>
+                             <i class="fa-solid fa-fire"></i> ¡OFERTAS AGRESIVAS! 
+                             <span style="font-size: 12px; margin-left: 10px; color: var(--color-gris-medio); font-weight: 400;">(Liquidación Rápida)</span>
                         </h4>
                         <div class="flash-product-strip">
-                            ${aggressiveOffers.map(p => `
-                                <div class="flash-item-card product-link" data-product-id="${p.id}">
-                                    <img src="${p.images[0]}" alt="${p.title}">
-                                    <div class="title">${p.title}</div>
-                                    <span class="price price-value" 
-                                        data-product-id="${p.id}" 
-                                        data-base-price="${p.basePrice}" 
-                                        data-old-price="${p.oldPrice}"
-                                    >${formatCurrency(p.price)}</span>
-                                    <br>
-                                    <span class="tag-black-friday" style="margin-top: 3px;">-${p.discount.toFixed(0)}% DESC.</span>
-                                     <button class="add-to-cart-grid-btn" style="margin-top: 5px;" onclick="addToCartGrid(event, ${p.id})">
-                                        <i class="fa-solid fa-cart-plus"></i> Añadir
-                                    </button>
-                                </div>
-                            `).join('')}
+                            ${aggressiveOffers.map(createFlashSaleItemHTML).join('')}
                         </div>
                     </div>
                 `;
-                productListContainer.insertAdjacentHTML('beforeend', flashSaleContent);
+                productListContainer.innerHTML += flashSaleContent;
             }
 
-            let productGridHTML = finalProducts.map(createProductCardHTML).join('');
-            productListContainer.insertAdjacentHTML('beforeend', `<div class="product-grid">${productGridHTML}</div>`);
 
-            // Re-adjuntar listeners a TODAS las tarjetas (grid y carrusel)
-            document.querySelectorAll('.product-link').forEach(link => {
-                link.removeEventListener('click', showProductDetail);
-                link.addEventListener('click', showProductDetail);
-            });
+            const gridContent = `
+                <div class="product-grid">
+                    ${finalProducts.map(createProductCardHTML).join('')}
+                </div>
+            `;
+            productListContainer.innerHTML += gridContent;
         }
 
-        window.filterByCategory = function(keyword, clickedElement = null, skipHighlight = false) {
-            const normalizedKeyword = keyword.toLowerCase();
+        window.filterByCategory = function(category, element) {
+            const normalizedKeyword = category.toLowerCase();
             currentCategoryFilter = normalizedKeyword;
 
-            document.querySelectorAll('.category-menu-original').forEach(el => el.classList.remove('active'));
-            if (!skipHighlight) {
-                document.querySelectorAll(`[data-category="${normalizedKeyword}"]`).forEach(el => {
-                    if (el.classList.contains('category-wrapper')) {
-                        // El menú de círculos no tiene clase 'active', pero podemos simular el estilo si es necesario
-                        // Por ahora, solo se activa el filtro lógico.
-                    }
-                });
-            }
+            // ACTUALIZA LA CLASE ACTIVA DEL MENÚ SUPERIOR
+            document.querySelectorAll('.category-wrapper').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-category') === normalizedKeyword) {
+                    item.classList.add('active'); 
+                }
+            });
 
-            // Filtrar y renderizar
-            let filteredProducts = PRODUCT_DATA.filter(p => p.categories.includes(normalizedKeyword) || normalizedKeyword === 'all');
+            let filteredProducts = normalizedKeyword === 'all' 
+                ? PRODUCT_DATA 
+                : PRODUCT_DATA.filter(p => p.categories.includes(normalizedKeyword));
+            
             renderProducts(filteredProducts);
             
-            // Limpiar la barra de búsqueda al cambiar la categoría
             document.getElementById('search-input').value = '';
         }
 
         window.handleSearch = function() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            
+
             if (searchTerm.length > 0) {
-                // Desactivar el filtro de categorías
-                currentCategoryFilter = 'search'; 
-                
+                currentCategoryFilter = 'search';
+
                 const filteredProducts = PRODUCT_DATA.filter(p => 
                     p.title.toLowerCase().includes(searchTerm) || 
-                    p.longDescription.toLowerCase().includes(searchTerm) ||
+                    p.longDescription.toLowerCase().includes(searchTerm) || 
                     p.categories.some(cat => cat.toLowerCase().includes(searchTerm))
                 );
 
                 renderProducts(filteredProducts, true);
             } else {
-                // Si la búsqueda se vacía, volver al filtro de categoría actual o 'all'
-                currentCategoryFilter = 'all'; 
+                currentCategoryFilter = 'all';
                 renderProducts(PRODUCT_DATA);
             }
         }
-
         // --- 5. LÓGICA DE DETALLE DE PRODUCTO ---
+
+        // FUNCIÓN DEL SLIDER DE IMAGEN PRINCIPAL
+        function showSliderImage(index) {
+            const images = currentProduct.images;
+            if (!images || images.length === 0) return;
+
+            let newIndex = index;
+            if (newIndex < 0) {
+                newIndex = images.length - 1; // Circular: ir a la última imagen
+            } else if (newIndex >= images.length) {
+                newIndex = 0; // Circular: ir a la primera imagen
+            }
+            
+            currentImageIndex = newIndex;
+            document.getElementById('detail-main-image').src = images[currentImageIndex];
+            
+            // Opcional: mostrar un indicador de índice (ej. "1/4")
+            // Si no hay un indicador, este paso se ignora.
+        }
 
         window.startCountdownTimer = function(hoursDuration) {
             const timerDisplay = document.getElementById('detail-countdown-timer');
@@ -1278,7 +1489,6 @@
                 }
                 totalSeconds--;
             }
-
             updateTimer();
             countdownInterval = setInterval(updateTimer, 1000);
         }
@@ -1287,210 +1497,242 @@
             const similarContainer = document.getElementById('similar-products-container');
             similarContainer.innerHTML = '';
             
-            const category = currentProduct.categories ? currentProduct.categories[0] : 'all';
+            const category = currentProduct.categories ? currentProduct.categories[0] : 'all'; 
+            
             const similarProducts = PRODUCT_DATA.filter(p => 
-                p.id !== currentProduct.id && p.categories && p.categories.includes(category)
+                p.id !== currentProduct.id && 
+                p.categories && 
+                p.categories.includes(category)
             ).sort(() => 0.5 - Math.random()).slice(0, 4);
 
             if (similarProducts.length > 0) {
                 document.getElementById('similar-products-section').style.display = 'block';
                 similarProducts.forEach(product => {
-                    similarContainer.insertAdjacentHTML('beforeend', createProductCardHTML(product));
-                });
-
-                // Añadir listener a los productos similares recién renderizados
-                similarContainer.querySelectorAll('.product-link').forEach(link => {
-                    link.removeEventListener('click', showProductDetail);
-                    link.addEventListener('click', showProductDetail);
+                    similarContainer.innerHTML += createProductCardHTML(product);
                 });
             } else {
                 document.getElementById('similar-products-section').style.display = 'none';
             }
         }
-
-        function buildSlider(imageUrls) {
-            const sliderImageWrapper = document.getElementById('slider-image-wrapper');
-            sliderImageWrapper.innerHTML = '';
-            sliderImageElements = [];
-
-            imageUrls.forEach((url, index) => {
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = `Imagen de Producto ${index + 1}`;
-                img.className = 'slider-image';
-                sliderImageWrapper.appendChild(img);
-                sliderImageElements.push(img);
-            });
-
-            currentImageIndex = 0;
-            showSliderImage(0);
-        }
-
         
-            sliderImageElements.forEach((img, i) => {
-                img.classList.toggle('active', i === newIndex);
+        // FUNCIÓN ACTUALIZADA: Renderiza la galería de imágenes (Grandes, apiladas)
+        function renderImageGallery(images) {
+            const gallery = document.getElementById('detail-image-gallery');
+            gallery.innerHTML = '';
+            
+            images.forEach((src, index) => {
+                const imgDiv = document.createElement('div');
+                
+                // Estilo para imagen grande (full-width) y apilada
+                imgDiv.style.width = '100%'; 
+                imgDiv.style.marginBottom = '15px'; 
+                imgDiv.style.borderRadius = '8px';
+                imgDiv.style.overflow = 'hidden';
+                imgDiv.style.cursor = 'zoom-in';
+                imgDiv.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+                
+                imgDiv.innerHTML = `
+                    <img src="${src}" alt="Imagen ${index + 1}" 
+                         style="width: 100%; height: auto; display: block;" 
+                         onclick="openImageInFullScreen(this.src)">
+                `;
+                gallery.appendChild(imgDiv);
             });
-
-            document.getElementById('current-slider-index').textContent = `${newIndex + 1}/${sliderImageElements.length}`;
-            currentImageIndex = newIndex;
         }
 
-        window.showProductDetail = function(event) {
-            event.preventDefault();
-            const productId = parseInt(event.currentTarget.getAttribute('data-product-id'));
-            currentProductId = productId;
-
+        window.showProductDetail = function(productId) {
             const product = PRODUCT_DATA.find(p => p.id === productId);
             if (!product) {
                 showToast("❌ Producto no encontrado.");
                 return;
             }
+            currentProduct = product; 
 
-            // Guardar la categoría vista para personalización del grid
             if (product.categories && product.categories.length > 0) {
-                 localStorage.setItem('userLastViewedCategory', product.categories[0]);
+                localStorage.setItem('userLastViewedCategory', product.categories[0]);
             }
 
-            // Añadir a productos recientes (simulado)
-        o    if (!recentProducts.some(p => p.id === productId)) {
-                 recentProducts.unshift(product);
-                 if (recentProducts.length > 5) recentProducts.pop();
-                 saveRecentProducts();
+            if (!recentProducts.some(p => p.id === productId)) {
+                recentProducts.unshift(product);
+                if (recentProducts.length > 5) recentProducts.pop();
+                saveRecentProducts();
             }
 
             hideAllViews();
             productDetailView.style.display = 'block';
-            detailFooter.style.display = 'flex'; // Mostrar el footer de detalle (FIX CSS hecho)
+            detailFooter.style.display = 'flex'; 
 
-            // Llenar datos del detalle
+            // --- Rellenar datos y precios ---
             document.getElementById('detail-product-title').textContent = product.title;
             document.getElementById('detail-monthly-payment').textContent = product.monthlyPayment || '';
             document.getElementById('detail-sales-count').textContent = product.sales;
             document.getElementById('detail-long-description').innerHTML = product.longDescription;
 
-            // Precios
-            const currentPriceText = formatCurrency(product.price); // Usa precio fijo
+            const currentPriceText = formatCurrency(product.price); 
             const oldPriceText = formatCurrency(product.oldPrice);
             const discount = product.discount.toFixed(0);
 
-            // Vista principal de precios
             document.getElementById('detail-current-price').textContent = currentPriceText;
             document.getElementById('detail-old-price').textContent = oldPriceText;
             document.getElementById('detail-discount-tag').textContent = `${discount}% DESC.`;
 
-            // Footer de precios
             document.getElementById('footer-current-price').textContent = currentPriceText;
             document.getElementById('footer-old-price').textContent = oldPriceText;
             document.getElementById('footer-discount-tag').textContent = `${discount}% ¡AHORA!`;
             
             document.getElementById('quantity-input').value = 1;
 
-            buildSlider(product.images);
-            startCountdownTimer(4); // 4 horas de oferta limitada (simulada)
+            // --- IMÁGENES Y GALERÍA ---
+            currentImageIndex = 0; // Resetear el índice al entrar
+            showSliderImage(currentImageIndex); // Mostrar la primera imagen en el slider
+            renderImageGallery(product.images); // Renderizar todas las imágenes grandes abajo
+
+            // --- BOTÓN DE GUARDAR ---
+            updateSaveButtonState(productId); 
+            document.getElementById('save-product-btn').onclick = () => toggleSavedStatus(productId);
+
+
+            startCountdownTimer(4); 
             renderSimilarProducts(product);
         }
 
         window.changeQuantity = function(delta) {
             const input = document.getElementById('quantity-input');
             let quantity = parseInt(input.value) || 1;
-            
             quantity += delta;
             if (quantity < 1) quantity = 1;
-            if (quantity > 10) quantity = 10; // Límite arbitrario
-
+            if (quantity > 10) quantity = 10; 
             input.value = quantity;
         }
 
-
-        /** * Lógica de añadir al carrito desde la vista de detalle
-         */
         window.addToCart = function() {
-            if (!currentProductId) {
-                showToast("❌ Error: No hay producto seleccionado.");
+            if (!currentProduct) {
+                showToast("❌ No hay producto seleccionado.");
                 return;
             }
-            const product = PRODUCT_DATA.find(p => p.id === currentProductId);
-            const quantity = parseInt(document.getElementById('quantity-input').value) || 1;
+            const quantityInput = document.getElementById('quantity-input');
+            const quantity = parseInt(quantityInput.value) || 1;
+            const priceToUse = currentProduct.basePrice; 
 
-            if (!product) {
-                showToast("❌ Error al encontrar el producto.");
-                return;
-            }
-
-            // Usar el precio fijo (basePrice)
-            const priceToUse = product.basePrice; 
-
-            // Buscar si ya existe en el carrito
-            const existingItemIndex = cart.findIndex(item => item.id === product.id);
+            const existingItemIndex = cart.findIndex(item => item.id === currentProduct.id);
 
             if (existingItemIndex > -1) {
-                // Si existe, incrementar cantidad
                 cart[existingItemIndex].quantity += quantity;
-                // Actualizar el precio (aunque es fijo, por seguridad)
-                cart[existingItemIndex].price = priceToUse; 
+                cart[existingItemIndex].price = priceToUse;
             } else {
-                // Si no existe, añadir al carrito
-                cart.push({ 
-                    id: product.id, 
-                    title: product.title, 
-                    price: priceToUse, // Usar el precio base fijo
-                    image: product.images[0], 
-                    quantity: quantity 
+                cart.push({
+                    id: currentProduct.id,
+                    title: currentProduct.title,
+                    price: priceToUse,
+                    image: currentProduct.images[0],
+                    quantity: quantity
                 });
             }
 
             saveCart();
             updateCartBadge();
-            // Notificación de éxito
-            showToast(`✅ ${quantity} unidad(es) de ${product.title.substring(0, 20)}... agregado(s)!`);
+            showToast(`✅ ¡${quantity} unidad(es) de ${currentProduct.title.substring(0, 20)}... agregado(s)!`);
         }
         
-        /**
-         * NUEVA FUNCIÓN: Añade un producto al carrito desde la vista de grid/lista con cantidad 1.
-         * Detiene la propagación del evento para evitar ir a la vista de detalle.
-         */
         window.addToCartGrid = function(event, productId) {
-            // Detener la propagación para que no se active showProductDetail del div padre
             event.stopPropagation();
 
             const product = PRODUCT_DATA.find(p => p.id === productId);
-
             if (!product) {
                 showToast("❌ Error al encontrar el producto.");
                 return;
             }
 
-            const quantity = 1; // Cantidad fija para el botón del grid
-            const priceToUse = product.basePrice; // Usar precio base (fijo)
+            const quantity = 1; 
+            const priceToUse = product.basePrice; 
 
-            // Buscar si ya existe en el carrito
             const existingItemIndex = cart.findIndex(item => item.id === product.id);
 
             if (existingItemIndex > -1) {
-                // Si existe, incrementar cantidad
                 cart[existingItemIndex].quantity += quantity;
-                // Actualizar el precio (aunque es fijo, por seguridad)
-                cart[existingItemIndex].price = priceToUse; 
+                cart[existingItemIndex].price = priceToUse;
             } else {
-                // Si no existe, añadir al carrito
-                cart.push({ 
-                    id: product.id, 
-                    title: product.title, 
-                    price: priceToUse, 
-                    image: product.images[0], 
-                    quantity: quantity 
+                cart.push({
+                    id: product.id,
+                    title: product.title,
+                    price: priceToUse,
+                    image: product.images[0],
+                    quantity: quantity
                 });
             }
 
             saveCart();
             updateCartBadge();
-             // Notificación de éxito
             showToast(`✅ ¡${quantity} unidad(es) de ${product.title.substring(0, 20)}... agregado(s)!`);
         }
 
+        // --- LÓGICA DE GUARDADOS ---
+        window.toggleSavedStatus = function(productId = currentProduct.id) {
+            const index = savedProducts.indexOf(productId);
+            const button = document.getElementById('save-product-btn');
+            
+            if (index > -1) {
+                // Remove
+                savedProducts.splice(index, 1);
+                showToast(`💔 Producto eliminado de guardados.`);
+                if (button) {
+                    button.style.color = 'var(--color-gris-medio)';
+                }
+            } else {
+                // Add
+                savedProducts.push(productId);
+                showToast(`❤️ Producto guardado en tu lista.`);
+                if (button) {
+                    button.style.color = 'var(--color-primario)';
+                }
+            }
+            saveSavedProducts();
+            if (savedView.style.display === 'block') {
+                 renderSavedItems();
+            }
+        }
 
+        function updateSaveButtonState(productId) {
+            const button = document.getElementById('save-product-btn');
+            if (!button) return;
+            
+            if (savedProducts.includes(productId)) {
+                button.style.color = 'var(--color-primario)'; 
+            } else {
+                button.style.color = 'var(--color-gris-medio)'; 
+            }
+        }
+
+        function showSavedView() {
+            hideAllViews();
+            savedView.style.display = 'block';
+            document.querySelector('.footer-nav .nav-item[data-view="saved"]').classList.add('active');
+            renderSavedItems();
+        }
+
+        function renderSavedItems() {
+            const container = document.getElementById('saved-items-container');
+            const emptyMessage = document.getElementById('empty-saved-message');
+            container.innerHTML = '';
+            
+            if (savedProducts.length === 0) {
+                emptyMessage.style.display = 'block';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+            
+            const productsToRender = savedProducts
+                .map(id => PRODUCT_DATA.find(p => p.id === id))
+                .filter(p => p !== undefined);
+            
+            productsToRender.forEach(product => {
+                container.innerHTML += createProductCardHTML(product);
+            });
+        }
+        // --- FIN LÓGICA DE GUARDADOS ---
+        
         // --- 6. LÓGICA DEL CARRITO (Render/Checkout) ---
-
         function showCartView() {
             hideAllViews();
             cartView.style.display = 'block';
@@ -1509,6 +1751,7 @@
                 totalElement.textContent = formatCurrency(0);
                 return;
             }
+
             emptyMessage.style.display = 'none';
 
             cart.forEach(item => {
@@ -1519,47 +1762,53 @@
                     <div style="display: flex; gap: 10px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
                         <img src="${item.image}" alt="${item.title}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 5px; background-color: #f0f0f0;">
                         <div style="flex-grow: 1;">
-                            <p style="font-weight: 500;">${item.title.substring(0, 40)}...</p>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
-                                <span style="font-weight: bold; color: var(--color-primario);">${formatCurrency(item.price)}</span>
-                                <div class="quantity-input-group" data-product-id="${item.id}">
-                                    <button onclick="updateCartItemQuantity(${item.id}, -1)">-</button>
-                                    <span style="padding: 0 10px;">${item.quantity}</span>
-                                    <button onclick="updateCartItemQuantity(${item.id}, 1)">+</button>
-                                </div>
-                            </div>
-                            <button onclick="removeCartItem(${item.id})" style="margin-top: 5px; color: var(--color-secundario); background: none; border: none; font-size: 12px; cursor: pointer;">
-                                Eliminar
+                            <p style="font-weight: 500; font-size: 14px; color: var(--color-negro);">${item.title}</p>
+                            <p style="font-size: 16px; font-weight: bold; color: var(--color-primario);">${formatCurrency(item.price)} x ${item.quantity}</p>
+                            <p style="font-size: 12px; color: var(--color-gris-medio);">Subtotal: ${formatCurrency(subtotal)}</p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end;">
+                            <button onclick="removeItemFromCart(${item.id})" style="background: none; border: none; color: var(--color-secundario); font-size: 16px; cursor: pointer;">
+                                <i class="fa-solid fa-trash"></i>
                             </button>
+                             <div class="quantity-input-group" style="display: flex; align-items: center; gap: 5px;">
+                                <button class="quantity-btn" onclick="updateCartItemQuantity(${item.id}, -1)" style="width: 25px; height: 25px; border-radius: 5px; background-color: #ccc; color: var(--color-negro); border: none; font-weight: bold;">-</button>
+                                <span style="font-weight: bold;">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="updateCartItemQuantity(${item.id}, 1)" style="width: 25px; height: 25px; border-radius: 5px; background-color: #ccc; color: var(--color-negro); border: none; font-weight: bold;">+</button>
+                            </div>
                         </div>
                     </div>
                 `;
-                container.insertAdjacentHTML('beforeend', itemHTML);
+                container.innerHTML += itemHTML;
             });
 
             totalElement.textContent = formatCurrency(totalPedido);
         }
+
+        window.removeItemFromCart = function(productId) {
+            const initialLength = cart.length;
+            cart = cart.filter(item => item.id !== productId);
+            if (cart.length < initialLength) {
+                saveCart();
+                updateCartBadge();
+                renderCartItems();
+                showToast("🗑️ Producto eliminado del carrito.");
+            }
+        }
         
         window.updateCartItemQuantity = function(productId, delta) {
-             const itemIndex = cart.findIndex(item => item.id === productId);
-             if (itemIndex > -1) {
-                 const newQuantity = cart[itemIndex].quantity + delta;
-                 if (newQuantity <= 0) {
-                     removeCartItem(productId);
-                 } else {
-                     cart[itemIndex].quantity = newQuantity;
-                     saveCart();
-                     renderCartItems();
-                 }
-             }
-         }
-         
-        window.removeCartItem = function(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            saveCart();
-            renderCartItems();
-            updateCartBadge();
-            showToast("Item eliminado del carrito.");
+            const itemIndex = cart.findIndex(item => item.id === productId);
+
+            if (itemIndex > -1) {
+                const newQuantity = cart[itemIndex].quantity + delta;
+                if (newQuantity < 1) {
+                    removeItemFromCart(productId);
+                } else if (newQuantity <= 10) {
+                    cart[itemIndex].quantity = newQuantity;
+                    saveCart();
+                    updateCartBadge();
+                    renderCartItems(); 
+                }
+            }
         }
 
 
@@ -1569,13 +1818,12 @@
                 return;
             }
 
-            // 1. Cargar datos del perfil para la dirección
             const userDataString = localStorage.getItem('userProfileData');
             const userData = userDataString ? JSON.parse(userDataString) : null;
 
             if (!userData) {
                 showToast("⚠️ Debe registrar su perfil y dirección para finalizar la compra.");
-                handleNavClick('profile'); // Redirigir a registro/perfil
+                handleNavClick('profile'); 
                 return;
             }
 
@@ -1591,7 +1839,6 @@
             messageBody += "\n----------------------------------\n";
             messageBody += `TOTAL DEL PEDIDO: ${formatCurrency(totalPedido)}\n`;
 
-            // 2. Adjuntar información de la dirección
             messageBody += "\nDATOS DE ENTREGA REGISTRADOS:\n";
             messageBody += `* Nombre Completo: ${userData.name || 'N/A'}\n`;
             messageBody += `* Teléfono: ${userData.phone || 'N/A'}\n`;
@@ -1603,24 +1850,17 @@
             messageBody += "\nEspero confirmación, ¡gracias!";
 
             const encodedMessage = encodeURIComponent(messageBody);
-            const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            const whatsappUrl = `https://wa.me/50375573427?text=${encodedMessage}`;
 
-            // 3. Abrir la ventana de WhatsApp y limpiar
-            window.open(whatsappURL, '_blank');
-            showToast("✅ Redirigiendo a WhatsApp. Su pedido ha sido enviado.");
-
-            // Opcional: limpiar carrito después de redirigir
-            // cart = [];
-            // saveCart();
-            // updateCartBadge();
+            window.open(whatsappUrl, '_blank');
+            showToast("🚀 Redirigiendo a WhatsApp para finalizar su compra...");
         }
 
         // --- 7. LÓGICA DE PERFIL Y REGISTRO ---
-
         const registrationForm = document.getElementById('registration-form');
-
-        window.saveUserData = function(event) {
-            event.preventDefault();
+        
+        function saveUserData(event) {
+            event.preventDefault(); 
             
             const userData = {
                 name: document.getElementById('reg-name').value,
@@ -1635,37 +1875,26 @@
                 detailedDescription: document.getElementById('reg-description').value,
             };
 
-            // Validación simple de contraseña
-            if (userData.password.length < 6) {
-                showToast("❌ La contraseña debe tener al menos 6 caracteres.");
-                return;
-            }
-
             localStorage.setItem('userProfileData', JSON.stringify(userData));
-            showToast("✅ ¡Datos de perfil y dirección guardados con éxito!");
-
-            // Redirigir a la vista de perfil
-            showProfileView(userData);
+            showToast("✅ Datos de perfil y dirección guardados correctamente.");
+            showProfileView();
         }
-
-        window.showRegistrationForm = function() {
-            hideAllViews();
-            registrationView.style.display = 'block';
-        }
-
-        function showProfileView(data) {
+        
+        function showProfileView() {
             hideAllViews();
             profileView.style.display = 'block';
-            const profileDetails = document.getElementById('profile-details');
-
-            if (data) {
-                 // Inyectar todos los datos, incluyendo Nombre y Teléfono
-                profileDetails.innerHTML = `
+            document.querySelector('.footer-nav .nav-item[data-view="profile"]').classList.add('active');
+            
+            const detailsContainer = document.getElementById('profile-details');
+            const userDataString = localStorage.getItem('userProfileData');
+            
+            if (userDataString) {
+                const data = JSON.parse(userDataString);
+                detailsContainer.innerHTML = `
                     <h3 style="margin-bottom: 5px; color: var(--color-primario);">Datos de Contacto</h3>
-                    <p><strong>Nombre Completo:</strong> ${data.name || 'N/A'}</p>
+                    <p><strong>Nombre:</strong> ${data.name || 'N/A'}</p>
                     <p><strong>Teléfono:</strong> ${data.phone || 'N/A'}</p>
                     <p><strong>Correo:</strong> ${data.email}</p>
-                    
                     <h3 style="margin-top: 20px; margin-bottom: 5px; color: var(--color-primario);">Dirección de Envío</h3>
                     <p><strong>Departamento:</strong> ${data.department}</p>
                     <p><strong>Municipio:</strong> ${data.municipality}</p>
@@ -1675,26 +1904,39 @@
                     <p><strong>Referencia:</strong> ${data.detailedDescription || 'N/A'}</p>
                 `;
             } else {
-                profileDetails.innerHTML = `<p style="text-align: center;">No hay datos de perfil guardados. Regístrese ahora.</p>`;
-            }
-        }
-
-        window.logout = function() {
-            if (confirm("¿Está seguro que desea cerrar sesión? Se borrarán sus datos de perfil (no el carrito).")) {
-                 localStorage.removeItem('userProfileData');
-                 showToast("✅ Sesión cerrada. Datos de perfil eliminados.");
-                 handleNavClick('main'); // Volver a la vista principal
-            } else {
-                 showToast("🚫 Operación cancelada.");
+                detailsContainer.innerHTML = `
+                    <p style="text-align: center; color: var(--color-gris-medio);">Aún no ha registrado sus datos. Por favor, complete el formulario.</p>
+                `;
             }
         }
         
-        // --- 8. INICIO DE LA APP ---
+        window.showRegistrationForm = function() {
+             hideAllViews();
+             registrationView.style.display = 'block';
+             
+             const userDataString = localStorage.getItem('userProfileData');
+             if (userDataString) {
+                 const data = JSON.parse(userDataString);
+                 document.getElementById('reg-name').value = data.name || '';
+                 document.getElementById('reg-phone').value = data.phone || '';
+                 document.getElementById('reg-email').value = data.email || '';
+                 document.getElementById('reg-department').value = data.department || '';
+                 document.getElementById('reg-municipality').value = data.municipality || '';
+                 document.getElementById('reg-colony').value = data.colonyName || '';
+                 document.getElementById('reg-street').value = data.streetNumber || '';
+                 document.getElementById('reg-color').value = data.houseColor || '';
+                 document.getElementById('reg-description').value = data.detailedDescription || '';
+             }
+        }
+        
+        function logout() {
+            showToast("👋 ¡Sesión Cerrada! Vuelva pronto.");
+            handleNavClick('main'); 
+        }
+
+        // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
-             // Ya que PRODUCT_DATA ahora está inicializado con basePrice y discount, 
-             // este forEach es redundante pero se mantiene por si se añaden productos dinámicamente.
              PRODUCT_DATA.forEach(p => {
-                 // Asegurarse que el precio base es el precio inicial para mantener la fijeza
                  if (typeof p.basePrice === 'undefined') {
                      p.basePrice = p.price; 
                      p.discount = calculateDiscount(p.price, p.oldPrice);
@@ -1703,31 +1945,31 @@
              
             loadCart(); 
             loadRecentProducts(); 
+            loadSavedProducts(); 
             
-            // La función startPriceVolatility ya no hace nada.
             handleNavClick('main'); 
             
             if (registrationForm) {
                  registrationForm.addEventListener('submit', saveUserData);
             }
-                                    // Listeners del Slider (Lógica circular, ahora con chequeo de seguridad)
-            if (sliderPrevBtn) { // <--- ¡Asegura que el botón existe antes de añadir el listener!
-                sliderPrevBtn.addEventListener('click', () => {
-                    const newIndex = currentImageIndex - 1;
-                    showSliderImage(newIndex);
-                });
-            }
+            
+            // LISTENERS DEL SLIDER (Controlan la navegación con flechas)
+            if (sliderPrevBtn && sliderNextBtn) {
+                 sliderPrevBtn.addEventListener('click', (e) => {
+                     e.stopPropagation();
+                     if (currentProduct && currentProduct.images) {
+                         showSliderImage(currentImageIndex - 1);
+                     }
+                 });
 
-            if (sliderNextBtn) { // <--- ¡Asegura que el botón existe antes de añadir el listener!
-                sliderNextBtn.addEventListener('click', () => {
-                    const newIndex = currentImageIndex + 1;
-                    showSliderImage(newIndex);
-                });
-            }
-
-
-
-
+                 sliderNextBtn.addEventListener('click', (e) => {
+                     e.stopPropagation();
+                     if (currentProduct && currentProduct.images) {
+                         showSliderImage(currentImageIndex + 1);
+                     }
+                 });
+             }
+            
             // Listener para el botón de retroceso de detalle
             document.getElementById('back-to-main').addEventListener('click', () => {
                 handleNavClick('main');

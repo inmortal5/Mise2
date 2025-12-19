@@ -1964,162 +1964,165 @@ Portabilidad: Tamaño compacto apto para escritorios, habitaciones o uso vehicul
         }
 
 
-        // --- 6. PROCESO DE PAGO (FORM SPREE) ---
-window.checkout = function() {
-    // Intentamos obtener los datos guardados
-    const savedData = localStorage.getItem('user_data');
-    const user = savedData ? JSON.parse(savedData) : null;
-    
-    // Verificamos si hay productos en el carrito
-    if (!cart || cart.length === 0) {
-        if (typeof showToast === 'function') showToast("⚠️ Su carrito está vacío");
-        else alert("⚠️ Su carrito está vacío");
-        return;
-    }
-
-    // Si no hay usuario, mandamos al perfil
-    if (!user) {
-        alert("Por favor, completa tu perfil y dale a 'Guardar' antes de comprar.");
-        handleNavClick('profile');
-        return;
-    }
-
-    // Preparamos el resumen del pedido para el correo
-    const pedidoDetalle = cart.map((item, index) => 
-        `${index + 1}. ${item.title} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`
-    ).join("\n");
-
-    const totalFinal = document.getElementById('cart-total') ? document.getElementById('cart-total').innerText : "Total no detectado";
-
-    // ENVÍO DIRECTO A FORMSPREE
-    fetch("https://formspree.io/f/3800a74f287541fba639b466625ec80f", {
-        method: "POST",
-        body: JSON.stringify({
-            cliente: user.name,
-            telefono: user.phone,
-            correo: user.email,
-            direccion: `${user.street}, ${user.colony}`,
-            ubicacion: `${user.municipality}, ${user.department}`,
-            referencia: user.description || "Sin referencia",
-            pedido: pedidoDetalle,
-            total: totalFinal
-        }),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    })
-        // --- 6. PROCESO DE PAGO (CORREGIDO) ---
         window.checkout = function() {
-            // Buscamos los datos usando el nombre 'user_data'
-            const savedData = localStorage.getItem('user_data');
-            const user = savedData ? JSON.parse(savedData) : null;
-            
-            if (!user) {
-                showToast("⚠️ Primero configura tu perfil.");
-                handleNavClick('registration');
-                return;
-            }
-
             if (cart.length === 0) {
-                showToast("🛒 El carrito está vacío.");
+                showToast("⚠️ Su carrito está vacío. Añada productos primero.");
                 return;
             }
 
-            const totalPedido = document.getElementById('cart-total').innerText;
-            const listaProductos = cart.map(i => `${i.title} (x${i.quantity})`).join(", ");
+            const userDataString = localStorage.getItem('userProfileData');
+            const userData = userDataString ? JSON.parse(userDataString) : null;
 
-            // Envío invisible a Formspree
-            fetch("https://formspree.io/f/3800a74f287541fba639b466625ec80f", {
-                method: "POST",
-                body: JSON.stringify({
-                    cliente: user.name,
-                    telefono: user.phone,
-                    direccion: `${user.street}, ${user.colony}`,
-                    ubicacion: `${user.municipality}, ${user.department}`,
-                    pedido: listaProductos,
-                    total: totalPedido
-                }),
-                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-            })
-            .then(response => {
-                if (response.ok) {
-                    showToast("✅ ¡Pedido enviado con éxito!");
-                    // Vaciamos carrito
-                    cart.length = 0;
-                    saveCart();
-                    updateCartUI();
-                    handleNavClick('main');
-                } else {
-                    alert("Error al enviar. Revisa Formspree.");
-                }
-            })
-            .catch(err => alert("Error de conexión."));
-        };
+            if (!userData) {
+                showToast("⚠️ Debe registrar su perfil y dirección para finalizar la compra.");
+                handleNavClick('profile'); 
+                return;
+            }
 
-        // --- 7. LÓGICA DE PERFIL (CORREGIDA) ---
-        function saveUserData(e) {
-            if (e) e.preventDefault();
+            let messageBody = "¡Hola! Quisiera realizar el siguiente pedido de la tienda en línea:\n\n";
+            let totalPedido = 0;
+
+            cart.forEach((item, index) => {
+                const subtotal = item.price * item.quantity;
+                totalPedido += subtotal;
+                messageBody += `${index + 1}. ${item.title} (x${item.quantity}) - ${formatCurrency(subtotal)}\n`;
+            });
+
+            messageBody += "\n----------------------------------\n";
+            messageBody += `TOTAL DEL PEDIDO: ${formatCurrency(totalPedido)}\n`;
+
+            messageBody += "\nDATOS DE ENTREGA REGISTRADOS:\n";
+            messageBody += `* Nombre Completo: ${userData.name || 'N/A'}\n`;
+            messageBody += `* Teléfono: ${userData.phone || 'N/A'}\n`;
+            messageBody += `* Email: ${userData.email}\n`;
+            messageBody += `* Departamento: ${userData.department}\n`;
+            messageBody += `* Municipio: ${userData.municipality}\n`;
+            messageBody += `* Dirección: C. ${userData.streetNumber || 'N/A'}, Col. ${userData.colonyName || 'N/A'}, Casa ${userData.houseColor || 'N/A'}\n`;
+            messageBody += `* Referencia: ${userData.detailedDescription || 'N/A'}\n`;
+            messageBody += "\nEspero confirmación, ¡gracias!";
+
+            const encodedMessage = encodeURIComponent(messageBody);
+            const whatsappUrl = `https://wa.me/50375573427?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
+            showToast("🚀 Redirigiendo a WhatsApp para finalizar su compra...");
+        }
+
+        // --- 7. LÓGICA DE PERFIL Y REGISTRO ---
+        const registrationForm = document.getElementById('registration-form');
+        
+        function saveUserData(event) {
+            event.preventDefault(); 
             
             const userData = {
                 name: document.getElementById('reg-name').value,
                 phone: document.getElementById('reg-phone').value,
                 email: document.getElementById('reg-email').value,
+                password: document.getElementById('reg-password').value,
                 department: document.getElementById('reg-department').value,
                 municipality: document.getElementById('reg-municipality').value,
-                colony: document.getElementById('reg-colony').value,
-                street: document.getElementById('reg-street').value,
-                color: document.getElementById('reg-color').value,
-                description: document.getElementById('reg-description').value
+                colonyName: document.getElementById('reg-colony').value,
+                streetNumber: document.getElementById('reg-street').value,
+                houseColor: document.getElementById('reg-color').value,
+                detailedDescription: document.getElementById('reg-description').value,
             };
 
-            localStorage.setItem('user_data', JSON.stringify(userData));
-            showToast("✅ ¡Perfil guardado con éxito!");
-            handleNavClick('main');
+            localStorage.setItem('userProfileData', JSON.stringify(userData));
+            showToast("✅ Datos de perfil y dirección guardados correctamente.");
+            showProfileView();
+        }
+        
+        function showProfileView() {
+            hideAllViews();
+            profileView.style.display = 'block';
+            document.querySelector('.footer-nav .nav-item[data-view="profile"]').classList.add('active');
+            
+            const detailsContainer = document.getElementById('profile-details');
+            const userDataString = localStorage.getItem('userProfileData');
+            
+            if (userDataString) {
+                const data = JSON.parse(userDataString);
+                detailsContainer.innerHTML = `
+                    <h3 style="margin-bottom: 5px; color: var(--color-primario);">Datos de Contacto</h3>
+                    <p><strong>Nombre:</strong> ${data.name || 'N/A'}</p>
+                    <p><strong>Teléfono:</strong> ${data.phone || 'N/A'}</p>
+                    <p><strong>Correo:</strong> ${data.email}</p>
+                    <h3 style="margin-top: 20px; margin-bottom: 5px; color: var(--color-primario);">Dirección de Envío</h3>
+                    <p><strong>Departamento:</strong> ${data.department}</p>
+                    <p><strong>Municipio:</strong> ${data.municipality}</p>
+                    <p><strong>Colonia/Barrio:</strong> ${data.colonyName || 'N/A'}</p>
+                    <p><strong>Calle/Pasaje:</strong> ${data.streetNumber || 'N/A'}</p>
+                    <p><strong>Color de Casa:</strong> ${data.houseColor || 'N/A'}</p>
+                    <p><strong>Referencia:</strong> ${data.detailedDescription || 'N/A'}</p>
+                `;
+            } else {
+                detailsContainer.innerHTML = `
+                    <p style="text-align: center; color: var(--color-gris-medio);">Aún no ha registrado sus datos. Por favor, complete el formulario.</p>
+                `;
+            }
+        }
+        
+        window.showRegistrationForm = function() {
+             hideAllViews();
+             registrationView.style.display = 'block';
+             
+             const userDataString = localStorage.getItem('userProfileData');
+             if (userDataString) {
+                 const data = JSON.parse(userDataString);
+                 document.getElementById('reg-name').value = data.name || '';
+                 document.getElementById('reg-phone').value = data.phone || '';
+                 document.getElementById('reg-email').value = data.email || '';
+                 document.getElementById('reg-department').value = data.department || '';
+                 document.getElementById('reg-municipality').value = data.municipality || '';
+                 document.getElementById('reg-colony').value = data.colonyName || '';
+                 document.getElementById('reg-street').value = data.streetNumber || '';
+                 document.getElementById('reg-color').value = data.houseColor || '';
+                 document.getElementById('reg-description').value = data.detailedDescription || '';
+             }
+        }
+        
+        function logout() {
+            showToast("👋 ¡Sesión Cerrada! Vuelva pronto.");
+            handleNavClick('main'); 
         }
 
-        // --- 8. INICIALIZACIÓN Y LISTENERS ---
+        // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
-            const registrationForm = document.getElementById('registration-form');
-            const sliderPrevBtn = document.getElementById('slider-prev');
-            const sliderNextBtn = document.getElementById('slider-next');
-
-            // Cargar datos si existen
-            const savedData = localStorage.getItem('user_data');
-            if (savedData) {
-                const u = JSON.parse(savedData);
-                if(document.getElementById('reg-name')) document.getElementById('reg-name').value = u.name || '';
-                if(document.getElementById('reg-phone')) document.getElementById('reg-phone').value = u.phone || '';
-                // (puedes agregar el resto de campos aquí si quieres que se auto-llenen)
-            }
-
-            products.forEach(p => {
-                if (typeof p.basePrice === 'undefined') {
-                    p.basePrice = p.price; 
-                    p.discount = calculateDiscount(p.price, p.oldPrice);
-                }
-            });
+             PRODUCT_DATA.forEach(p => {
+                 if (typeof p.basePrice === 'undefined') {
+                     p.basePrice = p.price; 
+                     p.discount = calculateDiscount(p.price, p.oldPrice);
+                 }
+             });
              
             loadCart(); 
             loadRecentProducts(); 
             loadSavedProducts(); 
+            
             handleNavClick('main'); 
             
             if (registrationForm) {
                  registrationForm.addEventListener('submit', saveUserData);
             }
             
+            // LISTENERS DEL SLIDER (Controlan la navegación con flechas)
             if (sliderPrevBtn && sliderNextBtn) {
                  sliderPrevBtn.addEventListener('click', (e) => {
                      e.stopPropagation();
-                     if (currentProduct && currentProduct.images) showSliderImage(currentImageIndex - 1);
+                     if (currentProduct && currentProduct.images) {
+                         showSliderImage(currentImageIndex - 1);
+                     }
                  });
+
                  sliderNextBtn.addEventListener('click', (e) => {
                      e.stopPropagation();
-                     if (currentProduct && currentProduct.images) showSliderImage(currentImageIndex + 1);
+                     if (currentProduct && currentProduct.images) {
+                         showSliderImage(currentImageIndex + 1);
+                     }
                  });
              }
             
+            // Listener para el botón de retroceso de detalle
             document.getElementById('back-to-main').addEventListener('click', () => {
                 handleNavClick('main');
             });

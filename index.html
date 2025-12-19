@@ -1964,38 +1964,46 @@ Portabilidad: Tamaño compacto apto para escritorios, habitaciones o uso vehicul
         }
 
 
-        window.checkout = function() {
-    // 1. Buscamos los datos usando el nombre exacto de tu archivo: 'user_data'
-    const userDataString = localStorage.getItem('user_data');
-    const user = userDataString ? JSON.parse(userDataString) : null;
-    const cartItems = typeof cart !== 'undefined' ? cart : (JSON.parse(localStorage.getItem('mise_cart')) || []);
+        // --- 6. PROCESO DE PAGO (FORM SPREE) ---
+window.checkout = function() {
+    // Intentamos obtener los datos guardados
+    const savedData = localStorage.getItem('user_data');
+    const user = savedData ? JSON.parse(savedData) : null;
+    
+    // Verificamos si hay productos en el carrito
+    if (!cart || cart.length === 0) {
+        if (typeof showToast === 'function') showToast("⚠️ Su carrito está vacío");
+        else alert("⚠️ Su carrito está vacío");
+        return;
+    }
 
-    // 2. Si no encuentra los datos, te manda al perfil
+    // Si no hay usuario, mandamos al perfil
     if (!user) {
-        alert("Por favor, completa tu perfil con tu dirección antes de comprar.");
+        alert("Por favor, completa tu perfil y dale a 'Guardar' antes de comprar.");
         handleNavClick('profile');
         return;
     }
 
-    if (cartItems.length === 0) {
-        alert("El carrito está vacío.");
-        return;
-    }
+    // Preparamos el resumen del pedido para el correo
+    const pedidoDetalle = cart.map((item, index) => 
+        `${index + 1}. ${item.title} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`
+    ).join("\n");
 
-    // 3. Preparamos el envío para Formspree
-    const datosPedido = {
-        cliente: user.name,
-        telefono: user.phone,
-        email: user.email,
-        direccion: `${user.street}, ${user.colony}`,
-        ubicacion: `${user.municipality}, ${user.department}`,
-        pedido: cartItems.map(item => `${item.title} (x${item.quantity})`).join(", "),
-        total: document.getElementById('cart-total').innerText
-    };
+    const totalFinal = document.getElementById('cart-total') ? document.getElementById('cart-total').innerText : "Total no detectado";
 
+    // ENVÍO DIRECTO A FORMSPREE
     fetch("https://formspree.io/f/3800a74f287541fba639b466625ec80f", {
         method: "POST",
-        body: JSON.stringify(datosPedido),
+        body: JSON.stringify({
+            cliente: user.name,
+            telefono: user.phone,
+            correo: user.email,
+            direccion: `${user.street}, ${user.colony}`,
+            ubicacion: `${user.municipality}, ${user.department}`,
+            referencia: user.description || "Sin referencia",
+            pedido: pedidoDetalle,
+            total: totalFinal
+        }),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -2003,37 +2011,38 @@ Portabilidad: Tamaño compacto apto para escritorios, habitaciones o uso vehicul
     })
     .then(response => {
         if (response.ok) {
-            alert("✅ ¡Pedido realizado con éxito! Revisaremos tu pedido pronto.");
-            // Vaciamos el carrito
-            if(typeof cart !== 'undefined') cart.length = 0;
-            localStorage.removeItem('mise_cart'); 
+            alert("✅ ¡Pedido realizado con éxito! Nos comunicaremos contigo pronto.");
+            cart.length = 0; 
+            localStorage.removeItem('mise_cart');
             if (typeof updateCartUI === 'function') updateCartUI();
-            handleNavClick('main'); 
+            handleNavClick('main');
         } else {
-            alert("Error al enviar. Verifica el dominio en Formspree.");
+            alert("Error al enviar. Asegúrate de que mise-store.com esté autorizado en Formspree.");
         }
     })
     .catch(error => alert("Error de conexión. Inténtalo de nuevo."));
 };
 
-        // --- 7. LÓGICA DE PERFIL Y REGISTRO ---
-        const registrationForm = document.getElementById('registration-form');
-        
-        function saveUserData(event) {
-            event.preventDefault(); 
-            
-            const userData = {
-                name: document.getElementById('reg-name').value,
-                phone: document.getElementById('reg-phone').value,
-                email: document.getElementById('reg-email').value,
-                password: document.getElementById('reg-password').value,
-                department: document.getElementById('reg-department').value,
-                municipality: document.getElementById('reg-municipality').value,
-                colonyName: document.getElementById('reg-colony').value,
-                streetNumber: document.getElementById('reg-street').value,
-                houseColor: document.getElementById('reg-color').value,
-                detailedDescription: document.getElementById('reg-description').value,
-            };
+// --- 7. LÓGICA DE PERFIL Y REGISTRO ---
+function saveUserData(event) {
+    if (event) event.preventDefault();
+    
+    const userData = {
+        name: document.getElementById('reg-name').value,
+        phone: document.getElementById('reg-phone').value,
+        email: document.getElementById('reg-email').value,
+        department: document.getElementById('reg-dept').value,
+        municipality: document.getElementById('reg-muni').value,
+        street: document.getElementById('reg-street').value,
+        colony: document.getElementById('reg-colony').value,
+        description: document.getElementById('reg-desc').value
+    };
+
+    // Guardamos con el nombre correcto para que checkout lo encuentre
+    localStorage.setItem('user_data', JSON.stringify(userData));
+    alert("💾 ¡Datos de perfil guardados! Ya puedes realizar tu pedido.");
+    handleNavClick('main');
+}
 
             localStorage.setItem('userProfileData', JSON.stringify(userData));
             showToast("✅ Datos de perfil y dirección guardados correctamente.");

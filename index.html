@@ -702,9 +702,10 @@
                     <span id="cart-total" style="color: var(--color-primario);">$0.00</span>
                 </div>
                  <button onclick="checkout()" style="width: 100%; padding: 15px; font-size: 16px; border: none; border-radius: 25px; cursor: pointer; background-color: var(--color-primario); color: white; font-weight: bold;">
-                    FINALIZAR COMPRA (PEDIR POR WHATSAPP)
-                </button>
-                <p style="font-size: 12px; text-align: center; color: var(--color-gris-medio); margin-top: 10px;">Será redirigido a WhatsApp con los detalles de su pedido y dirección.</p>
+    CONFIRMAR PEDIDO POR CORREO
+</button>
+<p style="font-size: 12px; text-align: center; color: var(--color-gris-medio); margin-top: 10px;">Su pedido será enviado automáticamente para ser procesado.</p>
+
             </div>
         </div>
         
@@ -1964,47 +1965,63 @@ Portabilidad: Tamaño compacto apto para escritorios, habitaciones o uso vehicul
         }
 
 
-        window.checkout = function() {
-            if (cart.length === 0) {
-                showToast("⚠️ Su carrito está vacío. Añada productos primero.");
-                return;
-            }
+        window.checkout = async function() {
+    const savedData = localStorage.getItem('mise_user_profile');
+    
+    if (!savedData) {
+        showToast("Por favor, registre su perfil primero.");
+        handleNavClick('profile');
+        return;
+    }
 
-            const userDataString = localStorage.getItem('userProfileData');
-            const userData = userDataString ? JSON.parse(userDataString) : null;
+    if (cart.length === 0) {
+        showToast("El carrito está vacío.");
+        return;
+    }
 
-            if (!userData) {
-                showToast("⚠️ Debe registrar su perfil y dirección para finalizar la compra.");
-                handleNavClick('profile'); 
-                return;
-            }
+    const user = JSON.parse(savedData);
+    let total = 0;
+    
+    let productSummary = cart.map(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+        return `${item.name} (Cant: ${item.quantity}) - $${subtotal.toFixed(2)}`;
+    }).join('\n');
 
-            let messageBody = "¡Hola! Quisiera realizar el siguiente pedido de la tienda en línea:\n\n";
-            let totalPedido = 0;
+    const datosPedido = {
+        _subject: "NUEVO PEDIDO DE LA TIENDA",
+        cliente: user.name,
+        telefono: user.phone,
+        email: user.email,
+        direccion: `${user.street}, ${user.colony}, ${user.municipality}, ${user.department}`,
+        referencia: user.description,
+        casa: user.color,
+        pedido: productSummary,
+        total_pagar: `$${total.toFixed(2)}`
+    };
 
-            cart.forEach((item, index) => {
-                const subtotal = item.price * item.quantity;
-                totalPedido += subtotal;
-                messageBody += `${index + 1}. ${item.title} (x${item.quantity}) - ${formatCurrency(subtotal)}\n`;
-            });
+    try {
+        showToast("Enviando pedido...");
+        const response = await fetch("https://formspree.io/f/d08de05891204861b81b82b2910bfd6a", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(datosPedido)
+        });
 
-            messageBody += "\n----------------------------------\n";
-            messageBody += `TOTAL DEL PEDIDO: ${formatCurrency(totalPedido)}\n`;
+        if (response.ok) {
+            showToast("¡Pedido enviado con éxito!");
+            cart = [];
+            saveCart();
+            renderCart();
+            handleNavClick('main');
+        } else {
+            showToast("Error al enviar. Intente de nuevo.");
+        }
+    } catch (error) {
+        showToast("Error de conexión.");
+    }
+};
 
-            messageBody += "\nDATOS DE ENTREGA REGISTRADOS:\n";
-            messageBody += `* Nombre Completo: ${userData.name || 'N/A'}\n`;
-            messageBody += `* Teléfono: ${userData.phone || 'N/A'}\n`;
-            messageBody += `* Email: ${userData.email}\n`;
-            messageBody += `* Departamento: ${userData.department}\n`;
-            messageBody += `* Municipio: ${userData.municipality}\n`;
-            messageBody += `* Dirección: C. ${userData.streetNumber || 'N/A'}, Col. ${userData.colonyName || 'N/A'}, Casa ${userData.houseColor || 'N/A'}\n`;
-            messageBody += `* Referencia: ${userData.detailedDescription || 'N/A'}\n`;
-            messageBody += "\nEspero confirmación, ¡gracias!";
-
-            const encodedMessage = encodeURIComponent(messageBody);
-            const whatsappUrl = `https://wa.me/50375573427?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
             showToast("🚀 Redirigiendo a WhatsApp para finalizar su compra...");
         }
 

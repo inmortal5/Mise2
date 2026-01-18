@@ -25,7 +25,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- HEADER --- */
+        
         .main-header {
             background: var(--header-bg);
             padding: 10px 15px;
@@ -45,7 +45,7 @@
             font-weight: bold; border: 1px solid var(--header-bg);
         }
 
-        /* --- CATEGORIAS --- */
+        /* categorias*/
         .cat-scroll {
             background: white; white-space: nowrap; overflow-x: auto;
             padding: 0; border-bottom: 1px solid #eee; position: sticky; top: 58px; z-index: 900;
@@ -61,11 +61,11 @@
             border-bottom: 3px solid var(--primary);
         }
 
-        /* --- BANNER --- */
+        /* BANNER SUPER IMPORTANTE*/
         .banner-area { padding: 0; background: #000; }
         .banner-area img { width: 100%; display: block; }
 
-        /* --- SECCIÓN DESTACADOS (SCROLL HORIZONTAL) --- */
+        /* destacados scroll  */
         .h-scroll-container {
             display: flex; overflow-x: auto; gap: 10px; padding: 10px; background: white; margin-bottom: 10px;
             scroll-behavior: smooth;
@@ -91,7 +91,7 @@
             font-size: 12px; margin-top: auto; cursor: pointer;
         }
 
-        /* --- GRID PRODUCTOS --- */
+        /* personalización de productos  */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; }
         .card { 
             background: white; border-radius: 8px; overflow: hidden; 
@@ -107,7 +107,7 @@
         .price-old { font-size: 11px; text-decoration: line-through; color: #999; }
         .discount-tag { background: #fff0f0; color: var(--primary); font-size: 10px; padding: 2px 4px; border-radius: 3px; font-weight: bold; }
 
-        /* --- DETALLE PRODUCTO --- */
+        /* personalización de el diseño*/
         .detail-header {
             background: white; padding: 10px 15px; display: flex; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #eee;
@@ -126,7 +126,7 @@
             font-weight: bold; font-size: 14px;
         }
 
-        /* --- FOOTER DETALLE --- */
+        
         .detail-footer {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white; border-top: 1px solid #ddd;
@@ -149,7 +149,7 @@
             font-weight: bold; font-size: 13px; padding: 10px 0; cursor: pointer;
         }
 
-        /* --- SIDEBAR & NAV --- */
+        
         .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 3000; transition: 0.3s; box-shadow: 2px 0 15px rgba(0,0,0,0.3); overflow-y: auto; }
         .sidebar-item { padding: 15px 20px; border-bottom: 1px solid #f5f5f5; display: flex; gap: 15px; align-items: center; color: #444; }
         .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index: 2900; }
@@ -379,7 +379,7 @@ Eliminar (Historial de Compras): Si ya realizaste una compra y deseas que elimin
         } catch(e) { document.getElementById('g-main').innerHTML = "Error cargando. Revisa tu conexión."; }
     }
 
-    // --- LÓGICA DE STOCK ---
+    // --- la Logica de rl stok ---
     function countInCart(id) {
         return cart.filter(x => x.id == id).length;
     }
@@ -411,13 +411,13 @@ Eliminar (Historial de Compras): Si ya realizaste una compra y deseas que elimin
         return !changed; 
     }
 
-    // --- PERSONALIZACIÓN ---
+    
     function personalizeFeed() {
         let featList = [];
         let mainList = [];
 
         if (interestCategory) {
-            // ARREGLO 1: Ya no ocultamos el producto seleccionado (se quitó el filtro sel.id)
+            
             const relevant = DB.filter(x => x.category === interestCategory);
             const others = DB.filter(x => x.category !== interestCategory);
             
@@ -512,7 +512,7 @@ Eliminar (Historial de Compras): Si ya realizaste una compra y deseas que elimin
 
         document.getElementById('stk-val').innerText = realAvailable > 0 ? `(${realAvailable} Disp.)` : "(Agotado/En carrito)";
         
-        // ARREGLO 2: Verificar botones al entrar
+        
         updateBtnState(realAvailable);
         
         startTimer();
@@ -520,7 +520,7 @@ Eliminar (Historial de Compras): Si ya realizaste una compra y deseas que elimin
         updateFavIcon();
     }
 
-    // ARREGLO 2: Función para controlar visibilidad de botones
+    
     function updateBtnState(available) {
         const btns = document.getElementById('action-btns-area');
         const msg = document.getElementById('no-stock-msg');
@@ -548,7 +548,7 @@ Eliminar (Historial de Compras): Si ya realizaste una compra y deseas que elimin
         const newAvailable = available - qty;
         document.getElementById('stk-val').innerText = newAvailable > 0 ? `(${newAvailable} Disp.)` : "(Agotado/En carrito)";
         
-        // ARREGLO 2: Actualizar botones después de agregar
+        
         updateBtnState(newAvailable);
 
         if(buyNow) nav('cart'); else showToast(`✅ Agregado al carrito (${qty})`);
